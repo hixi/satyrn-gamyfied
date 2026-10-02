@@ -1,19 +1,6 @@
 import Phaser from 'phaser';
 import { THEME } from '../theme';
-
-/** Scene keys in boot order. Later tasks add title/map/world + overlays. */
-export const SCENE_KEYS = {
-  boot: 'boot',
-  title: 'title',
-  map: 'map',
-  world: 'world',
-  notFound: 'not-found',
-  hud: 'hud',
-  dialogue: 'dialogue',
-  journal: 'journal',
-  actCard: 'act-card',
-  toasts: 'toasts',
-} as const;
+import { SCENE_KEYS } from '../scene-keys';
 
 function flatTexture(scene: Phaser.Scene, key: string, w: number, h: number, draw: (g: Phaser.GameObjects.Graphics) => void): void {
   const g = scene.make.graphics({ x: 0, y: 0 }, false);

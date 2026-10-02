@@ -1,5 +1,5 @@
 import type { Route } from '../router';
-import { SCENE_KEYS } from './scenes/boot';
+import { SCENE_KEYS } from './scene-keys';
 
 /** Where the journal Back button returns; session-only, resets to `#/` on reload. */
 let returnTo = '#/';
