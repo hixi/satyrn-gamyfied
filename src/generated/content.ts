@@ -18,6 +18,22 @@ export const content: Content = {
       "related": [
         "concept.ai-system"
       ]
+    },
+    "concept.context-window": {
+      "id": "concept.context-window",
+      "term": "Context window",
+      "short": "The finite cup everything must fit inside.",
+      "body": "A model can only hold so much text at once. That limit is the context window. Whatever does not fit is not there for the model at all. Pouring more in does not widen the cup; it only spills what was already there.",
+      "related": [
+        "concept.tokens"
+      ]
+    },
+    "concept.tokens": {
+      "id": "concept.tokens",
+      "term": "Token",
+      "short": "The unit of text a model reads and writes.",
+      "body": "A model does not read letters or words the way you do. It reads tokens: small chunks of text. Everything you show it is measured in tokens, and every token you spend is a token the model must hold in view at once.",
+      "related": []
     }
   },
   "characters": {
@@ -32,6 +48,12 @@ export const content: Content = {
       "name": "the Satyrn",
       "title": "your companion",
       "description": "A small, curious, horned creature. Quick and eager, easily distracted. It is the little local model you will learn to keep on track."
+    },
+    "character.waterwarden": {
+      "id": "character.waterwarden",
+      "name": "the Waterwarden",
+      "title": "keeper of the terrace",
+      "description": "She measures every drop that falls on the terrace. The cup is small and the season is long, so she has learned that choosing what to keep is the whole work."
     }
   },
   "worlds": {
@@ -48,6 +70,20 @@ export const content: Content = {
       "mechanic": "mechanic.lantern",
       "summary": "A dark workshop, one lantern, and a question about what a model can see.",
       "intro": "The Satyrn hands you a lantern in a dark workshop. \"Point it,\" it says. \"What you light is all I know.\""
+    },
+    "world.rain-gauge-terrace": {
+      "id": "world.rain-gauge-terrace",
+      "title": "The Rain-Gauge Terrace",
+      "act": "act1",
+      "order": 1,
+      "keeper": "character.waterwarden",
+      "concepts": [
+        "concept.tokens",
+        "concept.context-window"
+      ],
+      "mechanic": "mechanic.rain-gauge",
+      "summary": "A terrace, a fixed cup, and more rain than the cup can hold.",
+      "intro": "The Waterwarden holds out a cup the size of a fist. \"Five drops, no more,\" she says. \"The chatter will tempt you. Keep only what the plants need.\""
     }
   },
   "mechanics": {
@@ -60,6 +96,58 @@ export const content: Content = {
       "params": {
         "spots": 4
       }
+    },
+    "mechanic.rain-gauge": {
+      "id": "mechanic.rain-gauge",
+      "element": "mechanic-rain-gauge",
+      "title": "The Rain-Gauge",
+      "description": "The terrace's cup holds only five drops, and the plants need five particular ones. Choose what to keep; what you keep beyond the cup spills.",
+      "a11y": "For each drop, choose Keep or Let fall. The cup holds a fixed number of drops. You can also continue without playing.",
+      "params": {
+        "capacity": 5,
+        "drops": [
+          {
+            "id": "seed",
+            "label": "seed",
+            "essential": true
+          },
+          {
+            "id": "chatter",
+            "label": "chatter",
+            "essential": false
+          },
+          {
+            "id": "root",
+            "label": "root",
+            "essential": true
+          },
+          {
+            "id": "rumour",
+            "label": "rumour",
+            "essential": false
+          },
+          {
+            "id": "shoot",
+            "label": "shoot",
+            "essential": true
+          },
+          {
+            "id": "echo",
+            "label": "echo",
+            "essential": false
+          },
+          {
+            "id": "bloom",
+            "label": "bloom",
+            "essential": true
+          },
+          {
+            "id": "harvest",
+            "label": "harvest",
+            "essential": true
+          }
+        ]
+      }
     }
   },
   "achievements": {
@@ -71,6 +159,16 @@ export const content: Content = {
       "condition": {
         "event": "mechanic.completed",
         "mechanic": "mechanic.lantern"
+      }
+    },
+    "achievement.steady-hand": {
+      "id": "achievement.steady-hand",
+      "title": "Steady Hand",
+      "description": "Kept the cup to what the terrace truly needed.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.rain-gauge"
       }
     },
     "achievement.wanderer": {
@@ -116,6 +214,38 @@ export const content: Content = {
           "choices": []
         }
       }
+    },
+    "dialogue.waterwarden.intro": {
+      "id": "dialogue.waterwarden.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.waterwarden",
+          "text": "Every drop costs room. The cup does not grow. Tell me — what will you keep when the rain does not stop?",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "What happens to what I let fall?",
+              "next": "answer"
+            },
+            {
+              "id": "again",
+              "text": "I have filled this cup before.",
+              "condition": {
+                "event": "world.entered",
+                "world": "world.rain-gauge-terrace"
+              }
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.waterwarden",
+          "text": "It is gone. The model never saw it. That is not cruelty; it is simply the size of the cup.",
+          "choices": []
+        }
+      }
     }
   },
   "threads": {
@@ -123,7 +253,8 @@ export const content: Content = {
       "id": "thread.main",
       "title": "The Thread",
       "sequence": [
-        "world.lantern-room"
+        "world.lantern-room",
+        "world.rain-gauge-terrace"
       ]
     }
   },
