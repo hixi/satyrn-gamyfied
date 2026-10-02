@@ -28,6 +28,12 @@ describe('achievements', () => {
     expect(matchesCondition(s, done, { all: [{ event: 'mechanic.completed' }, { not: { event: 'world.skipped' } }] })).toBe(true);
     expect(matchesCondition(s, done, { any: [{ event: 'world.skipped' }, { event: 'mechanic.completed' }] })).toBe(true);
   });
+  it('honours a world filter on mechanic.completed', () => {
+    const s = createInitialState();
+    const ev = { type: 'mechanic.completed', mechanic: 'mechanic.x', world: 'world.a' } as const;
+    expect(matchesCondition(s, ev, { event: 'mechanic.completed', mechanic: 'mechanic.x', world: 'world.a' })).toBe(true);
+    expect(matchesCondition(s, ev, { event: 'mechanic.completed', mechanic: 'mechanic.x', world: 'world.b' })).toBe(false);
+  });
   it('returns only newly earned achievements', () => {
     const s = { ...createInitialState(), achievements: ['achievement.first-light'] };
     const earned = evaluateAchievements(s, done, [

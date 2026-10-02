@@ -19,6 +19,7 @@ const text = (node: Node): string => {
 describe('shell', () => {
   let store: Store;
   beforeEach(() => {
+    window.localStorage.clear();
     store = new Store({ storage: null });
   });
 
@@ -53,5 +54,15 @@ describe('shell', () => {
     await app.updateComplete;
     app.store.dispatch({ type: 'mechanic.completed', mechanic: 'mechanic.lantern', world: 'world.lantern-room' });
     expect(app.store.getState().achievements).toContain('achievement.first-light');
+  });
+
+  it('records a world as visited when entered through the shell', async () => {
+    const app: any = document.createElement('satyrn-app');
+    document.body.append(app);
+    await app.updateComplete;
+    app.renderRoute({ name: 'world', worldId: 'world.lantern-room' });
+    await app.updateComplete;
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(app.store.getState().visitedWorlds).toContain('world.lantern-room');
   });
 });

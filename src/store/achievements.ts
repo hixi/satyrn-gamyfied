@@ -28,11 +28,17 @@ export function matchesCondition(state: GameState, event: StoreEvent, condition:
         (event.type === 'world.engineRoom.completed' && (!condition.world || event.world === condition.world)) ||
         (!!condition.world && state.completedEngineRooms.includes(condition.world))
       );
-    case 'mechanic.completed':
-      return (
-        (event.type === 'mechanic.completed' && (!condition.mechanic || event.mechanic === condition.mechanic)) ||
-        (!!condition.mechanic && state.completedMechanics.includes(condition.mechanic))
-      );
+    case 'mechanic.completed': {
+      const matchesEvent =
+        event.type === 'mechanic.completed' &&
+        (!condition.mechanic || event.mechanic === condition.mechanic) &&
+        (!condition.world || event.world === condition.world);
+      const matchesState =
+        !!condition.mechanic &&
+        (!condition.world || state.visitedWorlds.includes(condition.world)) &&
+        state.completedMechanics.includes(condition.mechanic);
+      return matchesEvent || matchesState;
+    }
     case 'evidence.submitted':
       return (
         (event.type === 'evidence.submitted' && (!condition.mechanic || event.mechanic === condition.mechanic)) ||

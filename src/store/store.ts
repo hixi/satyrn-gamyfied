@@ -28,7 +28,7 @@ function defaultStorage(): StoragePort | null {
 /** Holds game state, evaluates achievements on each event, and notifies subscribers. */
 export class Store {
   private state: GameState;
-  private readonly listeners = new Set<(state: GameState, event: StoreEvent) => void>();
+  private readonly listeners = new Set<(state: GameState, event: StoreEvent | null) => void>();
   private readonly storage: StoragePort | null;
   private readonly achievements: Achievement[];
   private readonly predicates: Record<string, Predicate>;
@@ -48,7 +48,7 @@ export class Store {
     return this.state;
   }
 
-  subscribe(fn: (state: GameState, event: StoreEvent) => void): () => void {
+  subscribe(fn: (state: GameState, event: StoreEvent | null) => void): () => void {
     this.listeners.add(fn);
     return () => {
       this.listeners.delete(fn);
@@ -62,12 +62,13 @@ export class Store {
       this.state = { ...this.state, achievements: [...this.state.achievements, ...earned] };
     }
     this.persist();
-    for (const listener of this.listeners) listener(this.state, event);
+    this.notify(event);
   }
 
   reset(): void {
     this.state = createInitialState();
     this.persist();
+    this.notify(null);
   }
 
   export(): string {
@@ -77,6 +78,11 @@ export class Store {
   import(json: string): void {
     this.state = importState(json);
     this.persist();
+    this.notify(null);
+  }
+
+  private notify(event: StoreEvent | null): void {
+    for (const listener of this.listeners) listener(this.state, event);
   }
 
   private persist(): void {
