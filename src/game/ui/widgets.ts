@@ -175,6 +175,7 @@ export function makeButton(scene: Phaser.Scene, opts: ButtonOptions): Phaser.Gam
 
   const focus = useFocus(scene);
   focus.register(opts.id, enabled);
+  // Disabled buttons never join the widget maps (no ring, no tap, no Tab).
   const widgets = widgetsOf(scene);
   const tap = () => {
     if (!enabled) return;
@@ -195,18 +196,11 @@ export function makeButton(scene: Phaser.Scene, opts: ButtonOptions): Phaser.Gam
   });
   container.on('pointerout', () => bg.setStrokeStyle(2, color(THEME.palette.charcoal)));
   container.on('pointerup', tap);
-  // Destroy cleanup must not unregister a FRESH registry entry: render()
-  // resets the registry then destroys the old buttons, so the destroy
-  // handler would otherwise remove the new screen's ids. Only clean up
-  // when the stored focus object is the one we registered with.
-  container.on('destroy', () => {
-    const live = (scene as unknown as Record<string, unknown>)[FOCUS_KEY];
-    if (live === focus) focus.unregister(opts.id);
-    if (widgetsOf(scene) === widgets) {
-      widgets.rings.delete(opts.id);
-      widgets.taps.delete(opts.id);
-    }
-  });
+  // No destroy cleanup: every scene owns its render lifecycle
+  // (destroy-first-then-reset, or reset-then-rebuild on a fresh scene) and
+  // clears the widget maps explicitly. Per-button destroy handlers cannot
+  // distinguish a re-render teardown from a real removal — removeAll(true)
+  // does not even emit destroy — so they only ever deleted live entries.
   return container;
 }
 
@@ -247,8 +241,18 @@ export interface Tabs {
   selected(): number;
 }
 
+export interface TabOptions {
+  prefix?: string;
+  onSelect?: (i: number) => void;
+}
+
 /** Tab strip: buttons in a row; selection is a visual state + index. */
-export function makeTabs(scene: Phaser.Scene, labels: string[], mode: LayoutMode = 'expansive'): Tabs {
+export function makeTabs(
+  scene: Phaser.Scene,
+  labels: string[],
+  mode: LayoutMode = 'expansive',
+  opts: TabOptions = {},
+): Tabs {
   let current = 0;
   const buttons: Phaser.GameObjects.Container[] = [];
   const container = scene.add.container(0, 0);
@@ -256,7 +260,7 @@ export function makeTabs(scene: Phaser.Scene, labels: string[], mode: LayoutMode
     // Position left-to-right with compact-aware spacing.
     const size = buttonSize(mode);
     const button = makeButton(scene, {
-      id: `tab-${i}`,
+      id: `${opts.prefix ?? 'tab'}-${i}`,
       text,
       mode,
       onTap: () => tabs.select(i),
@@ -270,6 +274,7 @@ export function makeTabs(scene: Phaser.Scene, labels: string[], mode: LayoutMode
     select(i: number) {
       if (i < 0 || i >= buttons.length) return;
       current = i;
+      opts.onSelect?.(i);
     },
     selected: () => current,
   };

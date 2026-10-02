@@ -4,6 +4,7 @@ import { announce } from '../announce';
 import { content } from '../../generated/content';
 import type { Store } from '../../store/store';
 import { navigate } from '../router-bridge';
+import { toast } from '../overlays/toasts';
 import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus } from '../ui/widgets';
 
 /**
@@ -69,11 +70,12 @@ export class WorldPlaceholderScene extends Phaser.Scene {
 
   create(data: { worldId?: string }): void {
     const world = data.worldId ? content.worlds[data.worldId] : undefined;
+    const worldId = world?.id ?? data.worldId ?? 'world.unknown';
     const title = world?.title ?? 'Unknown Bead';
     const store = this.registry.get('store') as Store | undefined;
     if (world) store?.dispatch({ type: 'world.entered', world: world.id });
-    // Shared widget discipline: destroy first, then reset + rebuild.
-    this.children.removeAll(true);
+    // Fresh scene start: no old buttons exist, so reset + rebuild directly.
+    // (removeAll would run first with nothing to clear; create() runs once.)
     resetFocusWiring(this);
     useFocus(this);
     clearSceneWidgets(this);
@@ -96,8 +98,20 @@ export class WorldPlaceholderScene extends Phaser.Scene {
         align: 'center',
       })
       .setOrigin(0.5);
+    // Skip first: Enter without Tabbing takes the honest out, and the first
+    // Tab stop is the primary action (matches Title/Map Continue-first).
+    const skip = makeButton(this, {
+      id: 'world-skip',
+      text: 'Continue without playing',
+      onTap: () => {
+        store?.dispatch({ type: 'world.skipped', world: worldId });
+        announce('Skipped — honestly. Come back later if you like; the Thread keeps your place.');
+        toast(this.game, 'Skipped — come back later.');
+      },
+    });
+    skip.setPosition(cx, cy + 70);
     const back = makeButton(this, { id: 'world-back', text: 'Back to the map', onTap: () => navigate('#/') });
-    back.setPosition(cx, cy + 70);
+    back.setPosition(cx, cy + 130);
     announce(`${title}. This Bead opens in its wave.`);
   }
 }

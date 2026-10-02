@@ -79,6 +79,45 @@ test('map continues the thread to the next bead (placeholder)', async ({ page })
   await expect(page).toHaveURL(/#\/world\/world\.lantern-room/);
 });
 
+test('journal opens from the map and Back returns', async ({ page }) => {
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  // Skip the prologue: Tab twice from Next, Enter on Skip.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
+  // HUD Journal button sits at width-170: click it by pointer.
+  const canvas = page.locator('#game canvas');
+  const box = await canvas.boundingBox();
+  const journalX = (box?.width ?? 1280) - 170;
+  await canvas.click({ position: { x: journalX, y: 32 } });
+  await expect(page).toHaveURL(/#\/journal/);
+  await expect(page.locator('#satyrn-live')).toContainText(/Journey|Cards|Honors|Keepsake/);
+  // Journal starts before its first stop: five Tabs reach Back.
+  for (let i = 0; i < 5; i++) {
+    await page.keyboard.press('Tab');
+    await page.waitForTimeout(200);
+  }
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page).toHaveURL(/#\/$/);
+});
+
+test('world skip acknowledges honestly with a toast', async ({ page }) => {
+  await page.goto('/?e2e=1#/world/world.aviary-of-whispers');
+  await expect(page.locator('#game canvas')).toBeVisible();
+  await page.waitForTimeout(1000);
+  // Skip is the first Tab stop: Enter takes the honest out.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#satyrn-live')).toContainText(/come back later|honest/);
+});
+
 test('boots to the title and exposes the gated e2e hook', async ({ page }) => {
   await page.goto('/?e2e=1#/');
   await expect(page.locator('#satyrn-live')).toContainText(/Wayfarer|Thread/);

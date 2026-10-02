@@ -7,23 +7,18 @@ import { BootScene } from './game/scenes/boot';
 import { TitleScene } from './game/scenes/title';
 import { MapScene } from './game/scenes/map';
 import { SCENE_KEYS } from './game/scene-keys';
+import { toast } from './game/overlays/toasts';
 import { NotFoundScene, WorldPlaceholderScene } from './game/scenes/world-placeholder';
 import { HudScene } from './game/overlays/hud';
+import { JournalScene } from './game/overlays/journal';
+import { DialogueScene } from './game/overlays/dialogue';
+import { ActCardScene } from './game/overlays/act-card';
+import { ToastsScene } from './game/overlays/toasts';
 import { installE2eHook } from './game/e2e-hook';
 import { normalizeRoute, routeToSceneKey } from './game/router-bridge';
 import { parseHash } from './router';
 
-/** Scene stubs until Tasks 6–10 fill them in. Each announces its arrival. */
-function stub(key: string, line: string): new () => Phaser.Scene {
-  return class extends Phaser.Scene {
-    constructor() {
-      super(key);
-    }
-    create(): void {
-      announce(line);
-    }
-  };
-}
+
 
 const store = new Store({ achievements: Object.values(content.achievements) });
 const sounds = new SoundBank();
@@ -35,15 +30,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: { mode: Phaser.Scale.RESIZE, width: '100%', height: '100%' },
   render: { pixelArt: false, roundPixels: false },
   fps: { target: 60 },
-  scene: [
-    BootScene,
-    TitleScene,
-    MapScene,
-    WorldPlaceholderScene,
-    NotFoundScene,
-    HudScene,
-    stub(SCENE_KEYS.journal, 'The Moon remembers.'),
-  ],
+  scene: [BootScene, TitleScene, MapScene, WorldPlaceholderScene, NotFoundScene, HudScene, JournalScene, DialogueScene, ActCardScene, ToastsScene],
 };
 
 function routeFromHash(): void {
@@ -61,6 +48,17 @@ function routeFromHash(): void {
 }
 
 const game = new Phaser.Game(config);
+
+// Achievement toasts: diff the earned list on every dispatch.
+let lastAchievements: readonly string[] = [];
+store.subscribe((state) => {
+  const fresh = state.achievements.filter((id) => !lastAchievements.includes(id));
+  lastAchievements = [...state.achievements];
+  for (const id of fresh) {
+    const title = content.achievements[id]?.title ?? id;
+    toast(game, `Honor earned: ${title}.`);
+  }
+});
 game.registry.set('store', store);
 game.registry.set('sounds', sounds);
 game.registry.set('seenPrologue', store.getState().seenPrologue);

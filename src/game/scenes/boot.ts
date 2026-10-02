@@ -52,6 +52,8 @@ export class BootScene extends Phaser.Scene {
   create(): void {
     generateTextures(this);
     this.applySettings();
+    // Toasts overlay every route like the HUD; start it once at boot.
+    this.scene.run(SCENE_KEYS.toasts);
     const hash = typeof window !== 'undefined' ? window.location.hash : '';
     // A deep link wins over the boot default; Boot owns the first frame only.
     const seen = this.registry.get('seenPrologue') === true;
