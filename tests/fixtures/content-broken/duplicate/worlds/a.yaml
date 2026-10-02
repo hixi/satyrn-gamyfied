@@ -1,0 +1,7 @@
+id: world.dup
+title: A
+act: act1
+order: 0
+mechanic: mechanic.lantern
+summary: s
+intro: i

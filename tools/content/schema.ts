@@ -102,7 +102,7 @@ export const DialogueNodeSchema = z.object({
 });
 
 export const DialogueSchema = z.object({
-  id: id('dialogue'),
+  id: z.string().regex(/^dialogue\.[a-z0-9.-]+$/, 'must be dialogue.<slug>'),
   start: z.string().min(1),
   nodes: z.record(DialogueNodeSchema),
 });
