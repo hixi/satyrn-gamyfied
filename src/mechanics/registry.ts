@@ -8,6 +8,7 @@ import { MechanicRainGauge } from './rain-gauge/rain-gauge';
 import { MechanicAviary } from './aviary/aviary';
 import { MechanicCartwright } from './cartwright/cartwright';
 import { MechanicRoundPath } from './round-path/round-path';
+import { MechanicGate } from './gate/gate';
 
 const registry = new Map<string, Registration>();
 
@@ -37,4 +38,5 @@ export function registerMechanics(): void {
   defineMechanic('mechanic.aviary', MechanicAviary, 'mechanic-aviary');
   defineMechanic('mechanic.cartwright', MechanicCartwright, 'mechanic-cartwright');
   defineMechanic('mechanic.round-path', MechanicRoundPath, 'mechanic-round-path');
+  defineMechanic('mechanic.gate-of-orders', MechanicGate, 'mechanic-gate');
 }

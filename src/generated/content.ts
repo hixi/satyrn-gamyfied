@@ -28,6 +28,13 @@ export const content: Content = {
         "concept.ai-system"
       ]
     },
+    "concept.constraint": {
+      "id": "concept.constraint",
+      "term": "Constraint",
+      "short": "A condition that narrows what is allowed.",
+      "body": "A constraint says what must be true for something to pass. An ambiguous constraint leaves an edge case for the reader to guess, and a literal reader will guess with perfect confidence. The wording is the engineering.",
+      "related": []
+    },
     "concept.context-window": {
       "id": "concept.context-window",
       "term": "Context window",
@@ -43,6 +50,15 @@ export const content: Content = {
       "short": "The rig around the model — the loop, the limits, the checks.",
       "body": "The harness is everything around the model that keeps it on the road: how it loops, how far it may go before it must stop, and how it knows it has arrived. A good harness lets a small model finish what a bare one would bolt past or never reach.",
       "related": []
+    },
+    "concept.instruction": {
+      "id": "concept.instruction",
+      "term": "Instruction",
+      "short": "A standing order a literal reader follows exactly.",
+      "body": "An instruction is what you tell the system to do. A literal reader does not guess your intent; it does precisely what the words say. Most trouble with a model is not defiance — it is a reasonable reading of an unreasonable order.",
+      "related": [
+        "concept.constraint"
+      ]
     },
     "concept.loop-breaker": {
       "id": "concept.loop-breaker",
@@ -97,6 +113,12 @@ export const content: Content = {
       "title": "keeper of the yard",
       "description": "She builds the cart, but she cares more about the rig around the horse: the loop that keeps it moving, the limit that stops it, and the check that tells it when it has arrived."
     },
+    "character.gatekeeper": {
+      "id": "character.gatekeeper",
+      "name": "the Gatekeeper",
+      "title": "keeper of the orders",
+      "description": "She does not decide who enters. She holds the standing orders, and she follows them exactly as written — which is why the writing matters."
+    },
     "character.miller": {
       "id": "character.miller",
       "name": "the Miller",
@@ -150,6 +172,20 @@ export const content: Content = {
       "mechanic": "mechanic.cartwright",
       "summary": "A cart, a horse, a market, and the rig that gets one to the other.",
       "intro": "The Cartwright sets three empty slots before you. \"The horse is willing,\" she says. \"It is the rig that decides whether it arrives.\" "
+    },
+    "world.gate-of-orders": {
+      "id": "world.gate-of-orders",
+      "title": "The Gate of Orders",
+      "act": "act2",
+      "order": 5,
+      "keeper": "character.gatekeeper",
+      "concepts": [
+        "concept.instruction",
+        "concept.constraint"
+      ],
+      "mechanic": "mechanic.gate-of-orders",
+      "summary": "One gate, four travellers, and a set of orders that must survive every case.",
+      "intro": "The Gatekeeper taps a written order. \"I do not interpret,\" she says. \"I obey the words. Write them so the words mean what you meant.\""
     },
     "world.lantern-room": {
       "id": "world.lantern-room",
@@ -315,6 +351,83 @@ export const content: Content = {
         ]
       }
     },
+    "mechanic.gate-of-orders": {
+      "id": "mechanic.gate-of-orders",
+      "element": "mechanic-gate",
+      "title": "The Gate of Orders",
+      "description": "Choose the one standing order that admits exactly those who should enter. The gate reads it literally, so an order that misses an edge case will let the wrong traveller through.",
+      "a11y": "Choose one standing order from the list. The gate applies it to every traveller and reports which cases fail. You can also continue without playing.",
+      "params": {
+        "travellers": [
+          {
+            "id": "merchant-lantern",
+            "label": "the merchant with a lantern",
+            "attributes": [
+              "merchant",
+              "lantern"
+            ],
+            "shouldEnter": true
+          },
+          {
+            "id": "merchant-dark",
+            "label": "the merchant with no lantern",
+            "attributes": [
+              "merchant"
+            ],
+            "shouldEnter": false
+          },
+          {
+            "id": "pilgrim-lantern",
+            "label": "the pilgrim with a lantern",
+            "attributes": [
+              "pilgrim",
+              "lantern"
+            ],
+            "shouldEnter": true
+          },
+          {
+            "id": "pilgrim-dark",
+            "label": "the pilgrim with no lantern",
+            "attributes": [
+              "pilgrim"
+            ],
+            "shouldEnter": false
+          }
+        ],
+        "orders": [
+          {
+            "id": "any-lantern",
+            "text": "Admit anyone carrying a lantern.",
+            "allow": [
+              "lantern"
+            ],
+            "deny": []
+          },
+          {
+            "id": "merchants-only",
+            "text": "Admit merchants; turn away pilgrims.",
+            "allow": [
+              "merchant"
+            ],
+            "deny": []
+          },
+          {
+            "id": "everyone",
+            "text": "Admit everyone, and turn away no one.",
+            "allow": [],
+            "deny": []
+          },
+          {
+            "id": "carrying-nothing",
+            "text": "Admit only those who carry nothing.",
+            "allow": [],
+            "deny": [
+              "lantern"
+            ]
+          }
+        ]
+      }
+    },
     "mechanic.lantern": {
       "id": "mechanic.lantern",
       "element": "mechanic-lantern",
@@ -476,6 +589,16 @@ export const content: Content = {
         "mechanic": "mechanic.aviary"
       }
     },
+    "achievement.standing-order": {
+      "id": "achievement.standing-order",
+      "title": "A Standing Order That Stands",
+      "description": "Found the one order that survives every edge case.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.gate-of-orders"
+      }
+    },
     "achievement.steady-hand": {
       "id": "achievement.steady-hand",
       "title": "Steady Hand",
@@ -542,6 +665,30 @@ export const content: Content = {
           "id": "answer",
           "speaker": "character.cartwright",
           "text": "Everything includes the pretty bell. It rings, and does nothing else. The rig is not more parts; it is the right parts.",
+          "choices": []
+        }
+      }
+    },
+    "dialogue.gatekeeper.intro": {
+      "id": "dialogue.gatekeeper.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.gatekeeper",
+          "text": "\"Admit the worthy.\" Every traveller is worthy to someone. Tell me what they must carry, and I will admit exactly those.",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "What if I forget an edge case?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.gatekeeper",
+          "text": "Then I will obey the gap, and let the wrong one through. I will not know it was a mistake. I only know the order.",
           "choices": []
         }
       }
@@ -644,7 +791,8 @@ export const content: Content = {
         "world.rain-gauge-terrace",
         "world.aviary-of-whispers",
         "world.cartwrights-yard",
-        "world.round-path"
+        "world.round-path",
+        "world.gate-of-orders"
       ]
     }
   },
