@@ -5,6 +5,9 @@ import { SCENE_KEYS } from './scene-keys';
 /** Where the journal Back button returns; session-only, resets to `#/` on reload. */
 let returnTo = '#/';
 
+/** The page's hash listener, registered by main(); same-hash navigate re-runs it. */
+let onHashNavigation: (() => void) | null = null;
+
 export function getReturnTo(): string {
   return returnTo;
 }
@@ -13,23 +16,20 @@ export function setReturnTo(hash: string): void {
   returnTo = hash;
 }
 
+/** Register the hash-listener callback so same-hash navigations still switch. */
+export function setNavigationItemSelectedListener(fn: () => void): void {
+  onHashNavigation = fn;
+}
+
 /**
  * Change the URL hash; the hash listener drives the scene switch. When the
- * destination equals the current hash no event fires, so an explicit scene
- * switch carries the navigation instead of stranding on the old scene.
+ * destination equals the current hash no event fires, so the registered
+ * navigation listener re-runs the scene switch directly.
  */
 export function navigate(hash: string): void {
   if (typeof window === 'undefined') return;
   if (window.location.hash === hash) {
-    const game = (window as unknown as { game?: import('phaser').Game }).game;
-    const route = parseHash(hash);
-    const key = routeToSceneKey(route);
-    if (game && key !== SCENE_KEYS.hud && key !== SCENE_KEYS.toasts) {
-      for (const other of [SCENE_KEYS.title, SCENE_KEYS.map, SCENE_KEYS.world, SCENE_KEYS.notFound, SCENE_KEYS.journal]) {
-        if (other !== key) game.scene.stop(other);
-      }
-      game.scene.start(key, route.name === 'world' ? { worldId: route.worldId } : {});
-    }
+    onHashNavigation?.();
     return;
   }
   window.location.hash = hash;

@@ -4,12 +4,13 @@ import type { LayoutMode } from '../layout';
 import { buttonSize } from './sizes';
 import { createFocusRegistry, type FocusRegistry } from './focus';
 
+import type { SoundBank } from '../audio';
+
 /** Bar height the HUD actually uses: compact phones grow a second row. */
 export function hudHeight(scene: Phaser.Scene): number {
   const compact = scene.scale.width < THEME.COMPACT_MAX_WIDTH;
   return compact ? THEME.HUD_HEIGHT_COMPACT : THEME.HUD_HEIGHT;
 }
-import type { SoundBank } from '../audio';
 
 export type { ButtonSize } from './sizes';
 export { buttonSize } from './sizes';
@@ -29,7 +30,7 @@ function color(hex: string): number {
 }
 
 /** Scene keys whose buttons join the single global Tab order. */
-const TABBED_SCENES = new Set(['hud', 'title', 'map', 'world', 'journal']);
+const TABBED_SCENES = new Set(['hud', 'title', 'map', 'world', 'not-found', 'journal', 'dialogue', 'act-card']);
 
 /**
  * Per-scene focus registry, created on demand and stored on the scene.
@@ -48,11 +49,12 @@ function tabOwner(game: Phaser.Game): string {
       return false;
     }
   };
-  // World content owns Tab when a world is open; the HUD bar is reached
-  // from inside a world via pointer, not Tab. Everywhere else the topmost
-  // tabbed scene (map > title > hud) owns it.
+  // Overlays own Tab above their base scene; the HUD bar is reached via
+  // pointer from inside a world, not Tab.
+  if (active('dialogue') || active('act-card')) return 'dialogue';
   if (active('journal')) return 'journal';
   if (active('world')) return 'world';
+  if (active('not-found')) return 'not-found';
   if (active('map')) return 'map';
   if (active('title')) return 'title';
   return 'hud';
@@ -165,7 +167,9 @@ export function makeButton(scene: Phaser.Scene, opts: ButtonOptions): Phaser.Gam
       color: THEME.palette.ink,
     })
     .setOrigin(0.5);
-  const w = Math.max(label.width + size.paddingX * 2, 160);
+  // Compact strips fit smaller stops: 128 still clears the 48px touch bar.
+  const minW = (opts.mode ?? 'expansive') === 'compact' ? 128 : 160;
+  const w = Math.max(label.width + size.paddingX * 2, minW);
   const h = size.minHeight;
   const bg = scene.add
     .rectangle(0, 0, w, h, color(enabled ? THEME.palette.yellow : THEME.palette.greige))

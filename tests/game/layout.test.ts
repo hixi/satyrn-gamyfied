@@ -15,3 +15,13 @@ describe('layout', () => {
     expect(rect.h).toBeGreaterThan(0);
   });
 });
+
+describe('scroll math', () => {
+  test('clamps the scroll offset to the content bounds', async () => {
+    const { clampScroll } = await import('../../src/game/layout');
+    expect(clampScroll(-10, 800, 400)).toBe(0);
+    expect(clampScroll(90, 800, 400)).toBe(90);
+    expect(clampScroll(500, 800, 400)).toBe(400);
+    expect(clampScroll(100, 800, 400)).toBe(100);
+  });
+});

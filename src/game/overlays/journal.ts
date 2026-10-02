@@ -46,6 +46,7 @@ export class JournalScene extends Phaser.Scene {
     resetFocusWiring(this);
     useFocus(this);
     clearSceneWidgets(this);
+    this.cameras.main.setBackgroundColor(THEME.palette.paper);
     const store = storeOf(this);
     const state = store.getState();
     const { width, height } = this.scale;
@@ -62,19 +63,24 @@ export class JournalScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     // Tab taps re-render with the new tab; makeTabs.select never fires
-    // onSelect by itself, so no setup loop is possible.
-    const tabs = makeTabs(this, [...TABS], 'expansive', {
+    // onSelect by itself, so no setup loop is possible. Compact pages fit
+    // the four stops as a 2x2 grid; wide pages keep one row.
+    const compact = width < THEME.COMPACT_MAX_WIDTH;
+    const tabs = makeTabs(this, [...TABS], compact ? 'compact' : 'expansive', {
       prefix: 'journal-tab',
       onSelect: (i) => {
         this.tab = TABS[i] ?? 'Journey';
         this.render();
       },
     });
-    // Show the current tab as selected (visual index only, no callback).
-    void tabs;
-    tabs.container.setPosition(cx - 270, top + 64);
+    tabs.container.setPosition(compact ? cx - 130 : cx - 270, top + 64);
+    if (compact) {
+      tabs.container.getAll().forEach((button, i) => {
+        (button as Phaser.GameObjects.Container).setPosition(i % 2 ? 140 : 0, i < 2 ? 0 : 64);
+      });
+    }
 
-    const bodyTop = top + 130;
+    const bodyTop = top + (compact ? 180 : 130);
     const bodyWidth = Math.min(width - 64, 560);
     if (this.tab === 'Journey') {
       const stars = Object.entries(state.stars);

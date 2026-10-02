@@ -29,7 +29,6 @@ export function installE2eHook(game: Phaser.Game): void {
     version: 2,
     seed(n: number) {
       seeded = n;
-      Phaser.Math.RandomDataGenerator;
       for (const scene of game.scene.getScenes(true)) {
         scene.registry.set('e2eSeed', n);
       }

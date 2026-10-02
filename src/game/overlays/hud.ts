@@ -4,7 +4,7 @@ import { announce } from '../announce';
 import type { SoundBank } from '../audio';
 import type { Store } from '../../store/store';
 import { SCENE_KEYS } from '../scene-keys';
-import { getReturnTo, navigate, setReturnTo } from '../router-bridge';
+import { navigate, setReturnTo } from '../router-bridge';
 import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus } from '../ui/widgets';
 
 function storeOf(scene: Phaser.Scene): Store {
@@ -122,13 +122,14 @@ export class HudScene extends Phaser.Scene {
         .setOrigin(0.5);
       this.bar.add([stars, beads]);
     } else {
+      // Second row right: Wander's right edge would collide on 390px.
       const stars = this.add
-        .text(width - 60, y, `★ ${starTotal(store)}`, {
+        .text(width - 40, y + 56, `★ ${starTotal(store)}`, {
           fontFamily: THEME.fonts.body,
           fontSize: '16px',
           color: THEME.palette.ink,
         })
-        .setOrigin(0.5);
+        .setOrigin(1, 0.5);
       this.bar.add([stars]);
     }
 
@@ -157,6 +158,5 @@ export class HudScene extends Phaser.Scene {
     });
     sound.setPosition(compact ? 244 : width - 60, compact ? y + 56 : y);
     this.bar.add([journal, sound]);
-    void getReturnTo;
   }
 }

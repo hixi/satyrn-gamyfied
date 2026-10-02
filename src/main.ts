@@ -2,7 +2,6 @@ import Phaser from 'phaser';
 import { content } from './generated/content';
 import { Store } from './store/store';
 import { SoundBank } from './game/audio';
-import { announce } from './game/announce';
 import { BootScene } from './game/scenes/boot';
 import { TitleScene } from './game/scenes/title';
 import { MapScene } from './game/scenes/map';
@@ -15,10 +14,8 @@ import { DialogueScene } from './game/overlays/dialogue';
 import { ActCardScene } from './game/overlays/act-card';
 import { ToastsScene } from './game/overlays/toasts';
 import { installE2eHook } from './game/e2e-hook';
-import { normalizeRoute, routeToSceneKey } from './game/router-bridge';
+import { normalizeRoute, routeToSceneKey, setNavigationItemSelectedListener } from './game/router-bridge';
 import { parseHash } from './router';
-
-
 
 const store = new Store({ achievements: Object.values(content.achievements) });
 const sounds = new SoundBank();
@@ -69,6 +66,7 @@ installE2eHook(game);
 if (typeof window !== 'undefined') {
   window.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
   window.addEventListener('hashchange', routeFromHash);
+  setNavigationItemSelectedListener(routeFromHash);
   // Deep links (e.g. `#/world/x` on a cold load) must route past the boot
   // default: Boot leaves the first frame empty; the URL picks the scene.
   if (window.location.hash && window.location.hash !== '#/') {

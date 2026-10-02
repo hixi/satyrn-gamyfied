@@ -128,6 +128,56 @@ test('world skip acknowledges honestly with a toast', async ({ page }) => {
   await expect(page.locator('#satyrn-live')).toContainText(/come back later|honest/);
 });
 
+test('unknown routes land on a not-found card with a way home', async ({ page }) => {
+  await page.goto('/?e2e=1#/nope');
+  await expect(page.locator('#game canvas')).toBeVisible();
+  await page.waitForTimeout(1000);
+  await expect(page.locator('#satyrn-live')).toContainText(/not on the Thread/i);
+  // Table stakes: Tab reaches Back, Enter takes it.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page).toHaveURL(/#\/$/);
+});
+
+async function skipPrologue(page: import('@playwright/test').Page): Promise<void> {
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+}
+
+test('sound stays off by default, toggles on, and persists across reload', async ({ page }) => {
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  await skipPrologue(page);
+  // Sound button: right edge of the HUD (desktop) or second row (compact).
+  const canvas = page.locator('#game canvas');
+  const box = await canvas.boundingBox();
+  const narrow = (box?.width ?? 1280) < 700;
+  const soundPos = narrow ? { x: 204, y: 88 } : { x: (box?.width ?? 1280) - 60, y: 32 };
+  await canvas.click({ position: soundPos });
+  await expect(page.locator('#satyrn-live')).toContainText(/Sound on/);
+  const persisted = await page.evaluate(() => window.localStorage.getItem('satyrn-book-as-game:v1'));
+  expect(persisted).toContain('"soundOn":true');
+  await page.reload();
+  await page.waitForTimeout(1000);
+  const after = await page.evaluate(() => window.localStorage.getItem('satyrn-book-as-game:v1'));
+  expect(after).toContain('"soundOn":true');
+});
+
+test('Esc backs out of a world to the map', async ({ page }) => {
+  await page.goto('/?e2e=1#/world/world.aviary-of-whispers');
+  await expect(page.locator('#game canvas')).toBeVisible();
+  await page.waitForTimeout(1000);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(500);
+  await expect(page).toHaveURL(/#\/$/);
+});
+
 test('boots to the title and exposes the gated e2e hook', async ({ page }) => {
   await page.goto('/?e2e=1#/');
   await expect(page.locator('#satyrn-live')).toContainText(/Wayfarer|Thread/);

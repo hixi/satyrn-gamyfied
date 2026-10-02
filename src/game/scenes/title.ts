@@ -41,6 +41,7 @@ export class TitleScene extends Phaser.Scene {
     this.screen = 0;
     resetFocusWiring(this);
     useFocus(this);
+    this.cameras.main.setBackgroundColor(THEME.palette.paper);
     this.render();
     this.input.keyboard?.on('keydown-ESC', () => this.skip());
   }
@@ -121,8 +122,4 @@ export class TitleScene extends Phaser.Scene {
   currentScreen(): number {
     return this.screen;
   }
-}
-
-export function titleCopy(): { premiseIncludes: string } {
-  return { premiseIncludes: content.strings['strings.ui']?.values.appTitle ?? 'Satyrn' };
 }

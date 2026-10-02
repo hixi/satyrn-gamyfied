@@ -85,8 +85,8 @@ a shared pipe, and plant a Bead of your own in the commons.
 
 ## How it is built
 
-TypeScript, [Vite](https://vite.dev), and [Lit](https://lit.dev) web components.
-No SPA framework; a small event-bus store and a hash router.
+TypeScript, [Vite](https://vite.dev), and [Phaser](https://phaser.io).
+A small event-bus store and a hash router; the canvas is the whole UI.
 
 The design goal is that **every part is independently replaceable** — a world, a
 mechanic, a concept, an achievement — and that the references between parts are
@@ -94,7 +94,7 @@ mechanic, a concept, an achievement — and that the references between parts ar
 
 - **Content is data.** Worlds, concepts, characters, achievements, and
   dialogues live as YAML under `content/`. Structure is typed; prose is
-  schema-validated.
+  schema-validated. No Lit, no HTML chrome: every screen is a Phaser scene.
 - **References are one-directional** (a world points at its concepts; a concept
   never points back), which forbids cycles and is what makes a part swappable.
 - **A link checker resolves the whole graph** at build time: dangling
@@ -105,10 +105,9 @@ mechanic, a concept, an achievement — and that the references between parts ar
   holds, no check that can fail, an ambiguous order, sensitive needs past the
   well — fails the build. Each validator lives beside the mechanic and reuses
   its parser, so the check cannot drift from the mechanic itself.
-- **Every mechanic implements one documented contract** (`MechanicElement`): it
-  receives a read-only context, emits typed progress/complete/evidence events,
-  owns its styles, imports no other mechanic, and must declare an accessible
-  path. Adding a world is a content file plus one registry line.
+- **Every mechanic's logic is a pure module** (`src/game/worlds/<id>/logic.ts`):
+  scenario parsing and validation live beside the world's rules, importable
+  with zero Phaser, and the scene layer renders over them.
 
 ```
 content/     authored source of truth (YAML parts)
@@ -140,8 +139,8 @@ The parts model is designed for this. A new Bead is:
 
 1. `content/worlds/<id>.yaml` (and its concepts, characters, dialogue,
    achievement, and mechanic `params`),
-2. a Lit element in `src/mechanics/<id>/` implementing `MechanicElement`,
-3. one `defineMechanic(...)` line in `src/mechanics/registry.ts`,
+2. a logic module in `src/game/worlds/<id>/logic.ts` (pure, Phaser-free),
+3. a validator line in `src/game/worlds/scenarios.ts`,
 4. an entry in `content/threads/main.yaml`.
 
 `npm run check` must be green. See the design spec in
