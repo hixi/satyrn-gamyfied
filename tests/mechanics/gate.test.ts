@@ -48,6 +48,12 @@ describe('gate of orders', () => {
     expect(el.travellers.length).toBeGreaterThan(0);
   });
 
+  it('does not reveal which order passes before it is tried', async () => {
+    const { el } = mountMechanic('mechanic-gate', 'mechanic.gate-of-orders', 'world.gate-of-orders', authored);
+    await el.updateComplete;
+    expect(el.shadowRoot.textContent).not.toContain('every case is handled');
+  });
+
   it('completes via the accessible continue control', async () => {
     const { el, events } = mountMechanic('mechanic-gate', 'mechanic.gate-of-orders', 'world.gate-of-orders', authored);
     await el.updateComplete;

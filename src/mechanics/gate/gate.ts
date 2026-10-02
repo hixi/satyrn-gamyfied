@@ -187,25 +187,29 @@ export class MechanicGate extends MechanicElement {
   }
 
   render(): TemplateResult {
-    const failuresByOrder = new Map(this.readings().map((r) => [r.orderId, r.failures]));
     return html`
       <ul>
         ${this.orders.map((order) => {
-          const failures = failuresByOrder.get(order.id) ?? [];
-          const pass = failures.length === 0;
+          const tried = this.selectedOrder === order.id;
+          const failures = tried ? this.lastFailures : [];
+          const pass = tried && failures.length === 0;
           return html`
             <li data-pass=${pass ? 'true' : 'false'}>
               <label>
                 <input
                   type="radio"
                   name="order"
-                  .checked=${this.selectedOrder === order.id}
+                  .checked=${tried}
                   @change=${() => this.chooseOrder(order.id)}
                 />
                 <span>${order.text}</span>
               </label>
-              <span class="status ${pass ? '' : 'fail'}">
-                ${pass ? 'every case is handled' : `fails: ${failures.map((id) => this.labelFor(id)).join(', ')}`}
+              <span class="status ${pass ? '' : tried ? 'fail' : ''}">
+                ${!tried
+                  ? 'not yet tried'
+                  : pass
+                    ? 'every case is handled'
+                    : `fails: ${failures.map((id) => this.labelFor(id)).join(', ')}`}
               </span>
             </li>
           `;
