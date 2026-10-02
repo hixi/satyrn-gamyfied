@@ -28,6 +28,15 @@ export const content: Content = {
         "concept.ai-system"
       ]
     },
+    "concept.cloud": {
+      "id": "concept.cloud",
+      "term": "Cloud",
+      "short": "A model reached over a pipe to someone else's lake.",
+      "body": "A cloud model is reached over a pipe. It is quick and vast, and someone else keeps it running for you — for a price, and on their terms. Your prompts travel down the pipe and your privacy travels with them.",
+      "related": [
+        "concept.local-model"
+      ]
+    },
     "concept.constraint": {
       "id": "concept.constraint",
       "term": "Constraint",
@@ -75,6 +84,13 @@ export const content: Content = {
       "related": [
         "concept.constraint"
       ]
+    },
+    "concept.local-model": {
+      "id": "concept.local-model",
+      "term": "Local model",
+      "short": "A model on your own machine — private, yours, bounded by what you own.",
+      "body": "A local model runs on the machine in front of you. Your work does not leave the house, you keep the tap, and nothing changes underneath you without your say. The trade is that you are bounded by what your own machine can hold.",
+      "related": []
     },
     "concept.loop-breaker": {
       "id": "concept.loop-breaker",
@@ -192,6 +208,12 @@ export const content: Content = {
       "name": "the Waterwarden",
       "title": "keeper of the terrace",
       "description": "She measures every drop that falls on the terrace. The cup is small and the season is long, so she has learned that choosing what to keep is the whole work."
+    },
+    "character.well-digger": {
+      "id": "character.well-digger",
+      "name": "the Well-Digger",
+      "title": "keeper of the well",
+      "description": "She dug the well and owns every drop of it. The pipe from the distant lake is fast and cheap today, but the water is not hers, and someone else holds the tap."
     }
   },
   "worlds": {
@@ -306,6 +328,20 @@ export const content: Content = {
       "mechanic": "mechanic.round-path",
       "summary": "A mule that has been walking the same small circle since midnight.",
       "intro": "The Miller leads you to the yard. \"The work was done by dark,\" she says. \"But she has been going round since. I mind the circling more than the work.\""
+    },
+    "world.well-and-pipe": {
+      "id": "world.well-and-pipe",
+      "title": "The Well and the Pipe",
+      "act": "act3",
+      "order": 8,
+      "keeper": "character.well-digger",
+      "concepts": [
+        "concept.local-model",
+        "concept.cloud"
+      ],
+      "mechanic": "mechanic.well-and-pipe",
+      "summary": "A well you own, a pipe to a distant lake, and a day's needs to route.",
+      "intro": "The Well-Digger shows you the well, then the pipe. \"The pipe is quicker,\" she says. \"But the water is not yours, and it carries your business down the valley. Choose what leaves the house.\""
     }
   },
   "mechanics": {
@@ -721,6 +757,42 @@ export const content: Content = {
           }
         ]
       }
+    },
+    "mechanic.well-and-pipe": {
+      "id": "mechanic.well-and-pipe",
+      "element": "mechanic-well",
+      "title": "The Well and the Pipe",
+      "description": "Route each of the day's needs to your own well or to the pipe from the lake. Sensitive work must stay in the well, and the well holds only so much.",
+      "a11y": "For each need, choose Well or Pipe. Sensitive needs must go to the well; the well has a fixed capacity. You can also continue without playing.",
+      "params": {
+        "wellCapacity": 5,
+        "tasks": [
+          {
+            "id": "drinking",
+            "label": "drinking water",
+            "need": 2,
+            "sensitive": true
+          },
+          {
+            "id": "bathing",
+            "label": "bathing water",
+            "need": 2,
+            "sensitive": true
+          },
+          {
+            "id": "laundry",
+            "label": "laundry",
+            "need": 3,
+            "sensitive": false
+          },
+          {
+            "id": "garden",
+            "label": "watering the garden",
+            "need": 5,
+            "sensitive": false
+          }
+        ]
+      }
     }
   },
   "achievements": {
@@ -812,6 +884,16 @@ export const content: Content = {
       "condition": {
         "event": "world.skipped",
         "world": "world.lantern-room"
+      }
+    },
+    "achievement.your-own-well": {
+      "id": "achievement.your-own-well",
+      "title": "Your Own Well",
+      "description": "Kept what was private in the well, and sent the rest down the pipe.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.well-and-pipe"
       }
     }
   },
@@ -1023,6 +1105,30 @@ export const content: Content = {
           "choices": []
         }
       }
+    },
+    "dialogue.well-digger.intro": {
+      "id": "dialogue.well-digger.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.well-digger",
+          "text": "A pipe is convenient right up until someone else turns it off, or reads what you sent. Which of today's needs would you mind a stranger seeing?",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "Is the pipe ever the right choice?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.well-digger",
+          "text": "Often. Use it for what is heavy and public, and keep the well for what is private. The mistake is sending everything one way.",
+          "choices": []
+        }
+      }
     }
   },
   "threads": {
@@ -1037,7 +1143,8 @@ export const content: Content = {
         "world.round-path",
         "world.gate-of-orders",
         "world.assayers-scale",
-        "world.blueprint-and-mason"
+        "world.blueprint-and-mason",
+        "world.well-and-pipe"
       ]
     }
   },
