@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { Store } from '../store/store';
 import { Router, type Route } from '../router';
 import { getContent, getDiagnostics } from '../content';
+import { registerMechanics } from '../mechanics/registry';
 import './satyrn-map';
 import './satyrn-world';
 import './satyrn-concept';
@@ -69,6 +70,7 @@ export class SatyrnApp extends LitElement {
 
   connectedCallback(): void {
     super.connectedCallback();
+    registerMechanics();
     if (!this.router) this.router = new Router();
     this.router.start();
     this.unsubscribeRouter = this.router.subscribe((route) => {

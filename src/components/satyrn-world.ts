@@ -1,7 +1,10 @@
 import { LitElement, html, css } from 'lit';
 import { getContent } from '../content';
 import './satyrn-companion';
-import type { World } from '../../tools/content/schema';
+import { createInitialState } from '../store/state';
+import type { MechanicContext, MechanicElement } from '../mechanics/context';
+import type { Mechanic, World } from '../../tools/content/schema';
+import type { Store } from '../store/store';
 
 /** One Bead: its keeper, its ideas, and its mechanic (or an accessible placeholder). */
 export class SatyrnWorld extends LitElement {
@@ -26,9 +29,10 @@ export class SatyrnWorld extends LitElement {
 
   static properties = { worldId: {}, store: { attribute: false } };
   declare worldId: string;
-  declare store?: { dispatch(event: unknown): void; getState(): unknown };
+  declare store?: Store;
 
   private announced = false;
+  private mountedMechanic?: MechanicElement;
 
   constructor() {
     super();
@@ -58,6 +62,48 @@ export class SatyrnWorld extends LitElement {
 
   private continueWithoutPlaying(world: World): void {
     this.store?.dispatch({ type: 'world.skipped', world: world.id });
+  }
+
+  private buildContext(world: World, mechanic: Mechanic): MechanicContext {
+    const content = getContent();
+    const store = this.store;
+    const fallbackState = createInitialState();
+    return {
+      mechanic,
+      world,
+      content: {
+        getConcept: (id) => content.concepts[id],
+        getCharacter: (id) => content.characters[id],
+      },
+      store: store
+        ? {
+            getState: () => store.getState(),
+            subscribe: (fn) => store.subscribe(fn),
+            dispatch: (event) => store.dispatch(event),
+          }
+        : {
+            getState: () => fallbackState,
+            subscribe: () => () => {},
+            dispatch: () => {},
+          },
+      dialogue: { open: () => {} },
+    };
+  }
+
+  protected updated(): void {
+    if (this.mountedMechanic) return;
+    const content = getContent();
+    const world = content.worlds[this.worldId];
+    if (!world) return;
+    const mechanic = content.mechanics[world.mechanic];
+    const tag = mechanic?.element;
+    if (!tag || !customElements.get(tag)) return;
+    const holder = this.renderRoot.querySelector('[data-mechanic]');
+    if (!holder) return;
+    const element = document.createElement(tag) as MechanicElement;
+    element.setContext(this.buildContext(world, mechanic));
+    holder.append(element);
+    this.mountedMechanic = element;
   }
 
   render() {
