@@ -44,6 +44,22 @@ export const content: Content = {
         "concept.tokens"
       ]
     },
+    "concept.evaluation": {
+      "id": "concept.evaluation",
+      "term": "Evaluation",
+      "short": "Judging whether something actually works.",
+      "body": "Evaluation is how you decide whether a result is any good. A reading is only as trustworthy as the check behind it. A scale that cannot fail will tell you that everything is excellent, and you will learn nothing from it.",
+      "related": [
+        "concept.evidence"
+      ]
+    },
+    "concept.evidence": {
+      "id": "concept.evidence",
+      "term": "Evidence",
+      "short": "A check that could have failed and did not.",
+      "body": "Evidence is not a claim repeated more firmly. It is the result of a check that had a real chance of failing. Verify, do not assert: build the test that could say no, and then show that it said yes.",
+      "related": []
+    },
     "concept.harness": {
       "id": "concept.harness",
       "term": "Harness",
@@ -101,6 +117,12 @@ export const content: Content = {
     }
   },
   "characters": {
+    "character.assayer": {
+      "id": "character.assayer",
+      "name": "the Assayer",
+      "title": "keeper of the scale",
+      "description": "She weighs what the mill produced. Her gleaming scale reads \"excellent\" for everything, and she has begun to distrust a reading that has never once disagreed with her."
+    },
     "character.birdwright": {
       "id": "character.birdwright",
       "name": "the Birdwright",
@@ -145,6 +167,20 @@ export const content: Content = {
     }
   },
   "worlds": {
+    "world.assayers-scale": {
+      "id": "world.assayers-scale",
+      "title": "The Assayer's Scale",
+      "act": "act2",
+      "order": 6,
+      "keeper": "character.assayer",
+      "concepts": [
+        "concept.evaluation",
+        "concept.evidence"
+      ],
+      "mechanic": "mechanic.assayers-scale",
+      "summary": "A scale that praises everything, and the one weight it cannot catch.",
+      "intro": "The Assayer sets a gleaming scale before you. \"It says everything is excellent,\" she says. \"I have stopped believing it. Find me a reading that could disagree, and then find the weight that is wrong.\""
+    },
     "world.aviary-of-whispers": {
       "id": "world.aviary-of-whispers",
       "title": "The Aviary of Whispers",
@@ -231,6 +267,54 @@ export const content: Content = {
     }
   },
   "mechanics": {
+    "mechanic.assayers-scale": {
+      "id": "mechanic.assayers-scale",
+      "element": "mechanic-assayers-scale",
+      "title": "The Assayer's Scale",
+      "description": "The gleaming scale reads \"excellent\" for every weight. Find a check that can actually fail, rely on it, and mark the weight that is truly unsound.",
+      "a11y": "Choose a check to rely on, then mark the unsound weight. Only a check that can fail proves anything. You can also continue without playing.",
+      "params": {
+        "items": [
+          {
+            "id": "millers-measure",
+            "label": "the miller's measure",
+            "sound": true
+          },
+          {
+            "id": "bakers-measure",
+            "label": "the baker's measure",
+            "sound": true
+          },
+          {
+            "id": "cracked-weight",
+            "label": "the cracked weight",
+            "sound": false
+          },
+          {
+            "id": "ferrymans-measure",
+            "label": "the ferryman's measure",
+            "sound": true
+          }
+        ],
+        "checks": [
+          {
+            "id": "gleaming",
+            "label": "the gleaming scale",
+            "kind": "vanity"
+          },
+          {
+            "id": "assay",
+            "label": "the assay, weighed against a known good",
+            "kind": "honest"
+          },
+          {
+            "id": "stubborn",
+            "label": "the stubborn scale",
+            "kind": "broken"
+          }
+        ]
+      }
+    },
     "mechanic.aviary": {
       "id": "mechanic.aviary",
       "element": "mechanic-aviary",
@@ -559,6 +643,16 @@ export const content: Content = {
         "mechanic": "mechanic.round-path"
       }
     },
+    "achievement.can-fail": {
+      "id": "achievement.can-fail",
+      "title": "A Check That Can Fail",
+      "description": "Relied on a check that could fail, and caught the unsound weight.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.assayers-scale"
+      }
+    },
     "achievement.first-light": {
       "id": "achievement.first-light",
       "title": "First Light",
@@ -621,6 +715,30 @@ export const content: Content = {
     }
   },
   "dialogues": {
+    "dialogue.assayer.intro": {
+      "id": "dialogue.assayer.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.assayer",
+          "text": "A scale that never says no is not evidence. It is flattery with a needle.",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "Then what makes a reading trustworthy?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.assayer",
+          "text": "One that could have said no and did not. Build the check that can fail, and then trust what it tells you.",
+          "choices": []
+        }
+      }
+    },
     "dialogue.birdwright.intro": {
       "id": "dialogue.birdwright.intro",
       "start": "start",
@@ -792,7 +910,8 @@ export const content: Content = {
         "world.aviary-of-whispers",
         "world.cartwrights-yard",
         "world.round-path",
-        "world.gate-of-orders"
+        "world.gate-of-orders",
+        "world.assayers-scale"
       ]
     }
   },

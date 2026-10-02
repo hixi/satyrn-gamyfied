@@ -1,0 +1,7 @@
+id: achievement.can-fail
+title: A Check That Can Fail
+description: Relied on a check that could fail, and caught the unsound weight.
+kind: lesson
+condition:
+  event: mechanic.completed
+  mechanic: mechanic.assayers-scale
