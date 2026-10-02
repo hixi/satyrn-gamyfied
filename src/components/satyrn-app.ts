@@ -6,6 +6,7 @@ import './satyrn-map';
 import './satyrn-world';
 import './satyrn-concept';
 import './satyrn-not-found';
+import './satyrn-moon';
 
 /** The shell: header, Thread/Wander toggle, route switch, and dev diagnostics. */
 export class SatyrnApp extends LitElement {
@@ -120,6 +121,10 @@ export class SatyrnApp extends LitElement {
           </button>
         </span>
       </header>
+      <details class="journal">
+        <summary>Journal</summary>
+        <satyrn-moon .store=${this.store}></satyrn-moon>
+      </details>
       ${this.renderDiagnostics()}
       <main>${this.renderRouteContent()}</main>
     `;
@@ -135,7 +140,7 @@ export class SatyrnApp extends LitElement {
       case 'concept':
         return html`<satyrn-concept .conceptId=${this.route.conceptId}></satyrn-concept>`;
       case 'journal':
-        return html`<p>${getContent().strings['strings.ui']?.values.journalHeading ?? 'Journal'}</p>`;
+        return html`<satyrn-moon .store=${this.store}></satyrn-moon>`;
       case 'notFound':
         return html`<satyrn-not-found .path=${this.route.path}></satyrn-not-found>`;
     }

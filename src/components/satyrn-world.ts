@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { getContent } from '../content';
+import './satyrn-companion';
 import type { World } from '../../tools/content/schema';
 
 /** One Bead: its keeper, its ideas, and its mechanic (or an accessible placeholder). */
@@ -71,6 +72,7 @@ export class SatyrnWorld extends LitElement {
       <h2>${world.title}</h2>
       ${keeper ? html`<p><strong>${keeper.name}</strong> — ${keeper.description}</p>` : null}
       <p>${world.intro}</p>
+      <satyrn-companion .line=${mechanic?.description ?? world.summary}></satyrn-companion>
       <nav>
         ${world.concepts.map(
           (id) => html`<a href="#/concept/${id}">${content.concepts[id]?.term ?? id}</a>&nbsp;`,
