@@ -44,6 +44,13 @@ export const content: Content = {
       "body": "The harness is everything around the model that keeps it on the road: how it loops, how far it may go before it must stop, and how it knows it has arrived. A good harness lets a small model finish what a bare one would bolt past or never reach.",
       "related": []
     },
+    "concept.loop-breaker": {
+      "id": "concept.loop-breaker",
+      "term": "Loop breaker",
+      "short": "Noticing the repetition without halting the useful work.",
+      "body": "A loop breaker watches for the same step returning and changes the pattern before the work is spent. The trick is that it must not simply stop everything: the useful steps taken before the circle began are still worth keeping.",
+      "related": []
+    },
     "concept.models": {
       "id": "concept.models",
       "term": "Model",
@@ -51,6 +58,15 @@ export const content: Content = {
       "body": "A model is the thing that takes your tokens and produces an answer. Models differ in size, speed, and care. A small one is quick and cheap; a large one is slower and holds more. None of them is simply \"better\".",
       "related": [
         "concept.taxonomy"
+      ]
+    },
+    "concept.runaway-loop": {
+      "id": "concept.runaway-loop",
+      "term": "Runaway loop",
+      "short": "Repeating the same step while nothing changes.",
+      "body": "A runaway loop is work that looks like progress and is not. The same step is taken again and again with no new result, and the budget drains away while the task stands still. It is not laziness; it is a pattern the system cannot see from inside.",
+      "related": [
+        "concept.loop-breaker"
       ]
     },
     "concept.taxonomy": {
@@ -80,6 +96,12 @@ export const content: Content = {
       "name": "the Cartwright",
       "title": "keeper of the yard",
       "description": "She builds the cart, but she cares more about the rig around the horse: the loop that keeps it moving, the limit that stops it, and the check that tells it when it has arrived."
+    },
+    "character.miller": {
+      "id": "character.miller",
+      "name": "the Miller",
+      "title": "keeper of the round path",
+      "description": "She has watched the mule walk the same circle all night. The morning's work was finished long before; the circle was not work at all, only motion."
     },
     "character.moon": {
       "id": "character.moon",
@@ -156,6 +178,20 @@ export const content: Content = {
       "mechanic": "mechanic.rain-gauge",
       "summary": "A terrace, a fixed cup, and more rain than the cup can hold.",
       "intro": "The Waterwarden holds out a cup the size of a fist. \"Five drops, no more,\" she says. \"The chatter will tempt you. Keep only what the plants need.\""
+    },
+    "world.round-path": {
+      "id": "world.round-path",
+      "title": "The Round Path",
+      "act": "act2",
+      "order": 4,
+      "keeper": "character.miller",
+      "concepts": [
+        "concept.runaway-loop",
+        "concept.loop-breaker"
+      ],
+      "mechanic": "mechanic.round-path",
+      "summary": "A mule that has been walking the same small circle since midnight.",
+      "intro": "The Miller leads you to the yard. \"The work was done by dark,\" she says. \"But she has been going round since. I mind the circling more than the work.\""
     }
   },
   "mechanics": {
@@ -340,9 +376,76 @@ export const content: Content = {
           }
         ]
       }
+    },
+    "mechanic.round-path": {
+      "id": "mechanic.round-path",
+      "element": "mechanic-round-path",
+      "title": "The Round Path",
+      "description": "The mule's night is a list of steps. Some are this morning's work; then the same small circle, over and over. Mark the first full turn of the circle and break it — without losing the work.",
+      "a11y": "Select the steps that make up one turn of the repeating circle, then choose Break the loop. You can also continue without playing.",
+      "params": {
+        "cycleStart": 3,
+        "cycleLength": 2,
+        "steps": [
+          {
+            "id": "fetch-grain",
+            "label": "fetch grain"
+          },
+          {
+            "id": "grind-flour",
+            "label": "grind flour"
+          },
+          {
+            "id": "bag-flour",
+            "label": "bag flour"
+          },
+          {
+            "id": "pat-post",
+            "label": "pat the post"
+          },
+          {
+            "id": "find-nothing",
+            "label": "find nothing new"
+          },
+          {
+            "id": "pat-post-2",
+            "label": "pat the post"
+          },
+          {
+            "id": "find-nothing-2",
+            "label": "find nothing new"
+          },
+          {
+            "id": "pat-post-3",
+            "label": "pat the post"
+          },
+          {
+            "id": "find-nothing-3",
+            "label": "find nothing new"
+          },
+          {
+            "id": "pat-post-4",
+            "label": "pat the post"
+          },
+          {
+            "id": "find-nothing-4",
+            "label": "find nothing new"
+          }
+        ]
+      }
     }
   },
   "achievements": {
+    "achievement.broken-circle": {
+      "id": "achievement.broken-circle",
+      "title": "Broken Circle",
+      "description": "Broke the repeating loop and kept the morning's work.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.round-path"
+      }
+    },
     "achievement.first-light": {
       "id": "achievement.first-light",
       "title": "First Light",
@@ -443,6 +546,30 @@ export const content: Content = {
         }
       }
     },
+    "dialogue.miller.intro": {
+      "id": "dialogue.miller.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.miller",
+          "text": "Motion is not work. She takes the same two steps and learns nothing, and I pay for every one of them.",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "Should I simply stop her?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.miller",
+          "text": "Stop her and you lose the grain she already ground. Break the circle, and the morning's work still stands.",
+          "choices": []
+        }
+      }
+    },
     "dialogue.satyrn.intro": {
       "id": "dialogue.satyrn.intro",
       "start": "start",
@@ -516,7 +643,8 @@ export const content: Content = {
         "world.lantern-room",
         "world.rain-gauge-terrace",
         "world.aviary-of-whispers",
-        "world.cartwrights-yard"
+        "world.cartwrights-yard",
+        "world.round-path"
       ]
     }
   },
