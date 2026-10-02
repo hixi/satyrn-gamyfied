@@ -2,8 +2,18 @@ import { createInitialState, CURRENT_STATE_VERSION, type GameState } from './sta
 
 type Migration = (state: Record<string, unknown>) => Record<string, unknown>;
 
-/** Keyed by the version being migrated FROM. Empty until the schema changes. */
-const MIGRATIONS: Record<number, Migration> = {};
+/** Keyed by the version being migrated FROM. */
+const MIGRATIONS: Record<number, Migration> = {
+  1: (state) => ({
+    ...state,
+    version: 2,
+    stars: {},
+    earnedConcepts: [],
+    seenPrologue: Array.isArray(state.visitedWorlds) && state.visitedWorlds.length > 0,
+    seenActCards: [],
+    settings: { ...((state.settings as Record<string, unknown>) ?? {}), soundOn: false },
+  }),
+};
 
 /**
  * Bring a persisted value up to the current version. Anything unreadable,

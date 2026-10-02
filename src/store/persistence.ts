@@ -29,6 +29,10 @@ export function isGameState(value: unknown): value is GameState {
     isPlainObject(value.progress) &&
     isPlainObject(value.evidence) &&
     isStringArray(value.achievements) &&
+    isPlainObject(value.stars) &&
+    isStringArray(value.earnedConcepts) &&
+    typeof value.seenPrologue === 'boolean' &&
+    isStringArray(value.seenActCards) &&
     isPlainObject(value.settings)
   );
 }

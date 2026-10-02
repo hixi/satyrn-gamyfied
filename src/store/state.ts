@@ -1,5 +1,6 @@
 export interface Settings {
   reducedMotion: boolean;
+  soundOn: boolean;
 }
 
 export interface GameState {
@@ -12,6 +13,10 @@ export interface GameState {
   progress: Record<string, number>;
   evidence: Record<string, unknown>;
   achievements: string[];
+  stars: Record<string, number>;
+  earnedConcepts: string[];
+  seenPrologue: boolean;
+  seenActCards: string[];
   settings: Settings;
 }
 
@@ -23,6 +28,10 @@ export type StoreEvent =
   | { type: 'mechanic.completed'; mechanic: string; world?: string }
   | { type: 'evidence.submitted'; mechanic: string; evidence: unknown }
   | { type: 'mode.changed'; mode: 'thread' | 'wander' }
+  | { type: 'stars.awarded'; world: string; stars: number }
+  | { type: 'concept.earned'; concept: string }
+  | { type: 'prologue.seen' }
+  | { type: 'actCard.seen'; act: string }
   | { type: 'settings.changed'; settings: Partial<Settings> };
 
 export interface StoragePort {
@@ -32,7 +41,7 @@ export interface StoragePort {
 }
 
 /** Bump when `GameState` changes shape; add a migration for the old version. */
-export const CURRENT_STATE_VERSION = 1;
+export const CURRENT_STATE_VERSION = 2;
 
 export function createInitialState(): GameState {
   return {
@@ -45,7 +54,11 @@ export function createInitialState(): GameState {
     progress: {},
     evidence: {},
     achievements: [],
-    settings: { reducedMotion: false },
+    stars: {},
+    earnedConcepts: [],
+    seenPrologue: false,
+    seenActCards: [],
+    settings: { reducedMotion: false, soundOn: false },
   };
 }
 
@@ -69,6 +82,16 @@ export function applyEvent(state: GameState, event: StoreEvent): GameState {
       return { ...state, evidence: { ...state.evidence, [event.mechanic]: event.evidence } };
     case 'mode.changed':
       return { ...state, mode: event.mode };
+    case 'stars.awarded': {
+      const best = Math.max(state.stars[event.world] ?? 0, event.stars);
+      return { ...state, stars: { ...state.stars, [event.world]: best } };
+    }
+    case 'concept.earned':
+      return { ...state, earnedConcepts: pushUnique(state.earnedConcepts, event.concept) };
+    case 'prologue.seen':
+      return { ...state, seenPrologue: true };
+    case 'actCard.seen':
+      return { ...state, seenActCards: pushUnique(state.seenActCards, event.act) };
     case 'settings.changed':
       return { ...state, settings: { ...state.settings, ...event.settings } };
     default:
