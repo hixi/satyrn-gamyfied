@@ -1,49 +1,6 @@
 import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
-
-type ClauseKind = 'width' | 'height' | 'vague';
-
-interface Clause {
-  id: string;
-  text: string;
-  kind: ClauseKind;
-  value?: number;
-}
-
-const DEFAULT_BLUEPRINT = { width: 60, height: 20 };
-const DEFAULT_CLAUSES: Clause[] = [
-  { id: 'w60', text: '60 bricks wide', kind: 'width', value: 60 },
-  { id: 'w40', text: '40 bricks wide', kind: 'width', value: 40 },
-  { id: 'h20', text: '20 bricks high', kind: 'height', value: 20 },
-  { id: 'h30', text: '30 bricks high', kind: 'height', value: 30 },
-  { id: 'sturdy', text: 'sturdy enough', kind: 'vague' },
-  { id: 'about-right', text: 'looks about right', kind: 'vague' },
-];
-
-function positiveNumber(value: unknown, fallback: number): number {
-  return typeof value === 'number' && value > 0 ? value : fallback;
-}
-
-function parseScenario(params: unknown): { blueprint: { width: number; height: number }; clauses: Clause[] } {
-  const raw = (params ?? {}) as { blueprint?: unknown; clauses?: unknown };
-  const bp = (raw.blueprint ?? {}) as Record<string, unknown>;
-  const blueprint = {
-    width: positiveNumber(bp.width, DEFAULT_BLUEPRINT.width),
-    height: positiveNumber(bp.height, DEFAULT_BLUEPRINT.height),
-  };
-  const kinds: ClauseKind[] = ['width', 'height', 'vague'];
-  const clauses = Array.isArray(raw.clauses)
-    ? raw.clauses
-        .filter((c): c is Record<string, unknown> => !!c && typeof c === 'object')
-        .map((c, i) => ({
-          id: typeof c.id === 'string' && c.id ? c.id : `clause-${i}`,
-          text: typeof c.text === 'string' && c.text ? c.text : `clause ${i + 1}`,
-          kind: kinds.includes(c.kind as ClauseKind) ? (c.kind as ClauseKind) : 'vague',
-          value: typeof c.value === 'number' ? c.value : undefined,
-        }))
-    : [];
-  return { blueprint, clauses: clauses.length ? clauses : DEFAULT_CLAUSES };
-}
+import { parseScenario, type Clause, type ClauseKind } from './scenario';
 
 /** The Blueprint and the Mason: a spec the Mason can build and check. */
 export class MechanicBlueprint extends MechanicElement {

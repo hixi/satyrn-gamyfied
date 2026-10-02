@@ -1,57 +1,6 @@
 import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
-
-interface Seed {
-  id: string;
-  name: string;
-}
-
-interface CommunityBead {
-  id: string;
-  name: string;
-  keeper: string;
-  about: string;
-}
-
-const MAX_NAME_LENGTH = 60;
-
-const DEFAULT_SEEDS: Seed[] = [
-  { id: 'seed-attention', name: 'Attention' },
-  { id: 'seed-evidence', name: 'Evidence' },
-  { id: 'seed-constraint', name: 'Constraint' },
-  { id: 'seed-tending', name: 'Tending' },
-];
-const DEFAULT_BEADS: CommunityBead[] = [
-  { id: 'fog-alphabet', name: 'The Fog Alphabet', keeper: 'a lighthouse keeper', about: 'A Bead about lighting one thing at a time.' },
-  { id: 'long-ledger', name: 'The Long Ledger', keeper: 'a bookkeeper', about: 'A Bead about counting what a small model spends.' },
-  { id: 'second-lantern', name: 'The Second Lantern', keeper: 'a night watch', about: 'A Bead about keeping a spare check ready.' },
-];
-
-function parseScenario(params: unknown): { seeds: Seed[]; communityBeads: CommunityBead[] } {
-  const raw = (params ?? {}) as { seeds?: unknown; communityBeads?: unknown };
-  const seeds = Array.isArray(raw.seeds)
-    ? raw.seeds
-        .filter((s): s is Record<string, unknown> => !!s && typeof s === 'object')
-        .map((s, i) => ({
-          id: typeof s.id === 'string' && s.id ? s.id : `seed-${i}`,
-          name: typeof s.name === 'string' && s.name ? s.name : `seed ${i + 1}`,
-        }))
-    : [];
-  const communityBeads = Array.isArray(raw.communityBeads)
-    ? raw.communityBeads
-        .filter((b): b is Record<string, unknown> => !!b && typeof b === 'object')
-        .map((b, i) => ({
-          id: typeof b.id === 'string' && b.id ? b.id : `bead-${i}`,
-          name: typeof b.name === 'string' && b.name ? b.name : `Bead ${i + 1}`,
-          keeper: typeof b.keeper === 'string' && b.keeper ? b.keeper : 'someone',
-          about: typeof b.about === 'string' && b.about ? b.about : '',
-        }))
-    : [];
-  return {
-    seeds: seeds.length ? seeds : DEFAULT_SEEDS,
-    communityBeads: communityBeads.length ? communityBeads : DEFAULT_BEADS,
-  };
-}
+import { parseScenario, MAX_NAME_LENGTH, type CommunityBead, type Seed } from './scenario';
 
 /** The Commons Garden: wander the commons, then plant a Bead of your own. */
 export class MechanicGarden extends MechanicElement {

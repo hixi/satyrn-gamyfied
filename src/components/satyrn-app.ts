@@ -100,12 +100,13 @@ export class SatyrnApp extends LitElement {
   }
 
   private renderDiagnostics() {
-    const dangling = getDiagnostics().dangling;
-    if (!dangling.length) return null;
+    const { dangling, scenarioProblems } = getDiagnostics();
+    if (!dangling.length && !scenarioProblems.length) return null;
     return html`
       <div class="diagnostics" role="status">
         <strong>Content warning:</strong>
         ${dangling.map((ref) => html`<span>${ref.from} → ${ref.target} (${ref.field}); </span>`)}
+        ${scenarioProblems.map((p) => html`<span>${p.mechanic}: ${p.problem}; </span>`)}
       </div>
     `;
   }

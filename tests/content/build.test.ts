@@ -19,4 +19,18 @@ describe('content build', () => {
     const out = join(mkdtempSync(join(tmpdir(), 'satyrn-')), 'content.ts');
     await expect(buildContent({ rootDir: 'tests/fixtures/content-empty', outFile: out, strict: true })).rejects.toThrow(/empty/i);
   });
+  it('strict mode refuses an unsolvable mechanic scenario', async () => {
+    const out = join(mkdtempSync(join(tmpdir(), 'satyrn-')), 'content.ts');
+    await expect(
+      buildContent({ rootDir: 'tests/fixtures/content-broken/scenario', outFile: out, strict: true }),
+    ).rejects.toThrow(/scenario problems/i);
+  });
+  it('lenient mode reports a scenario problem without failing', async () => {
+    const out = join(mkdtempSync(join(tmpdir(), 'satyrn-')), 'content.ts');
+    const r = await buildContent({ rootDir: 'tests/fixtures/content-broken/scenario', outFile: out, strict: false });
+    expect(r.diagnostics.scenarioProblems).toContainEqual({
+      mechanic: 'mechanic.rain-gauge',
+      problem: expect.stringMatching(/unsolvable/),
+    });
+  });
 });

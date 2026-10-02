@@ -1,39 +1,6 @@
 import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
-
-type Source = 'well' | 'pipe';
-
-interface Task {
-  id: string;
-  label: string;
-  need: number;
-  sensitive: boolean;
-}
-
-const DEFAULT_CAPACITY = 5;
-const DEFAULT_TASKS: Task[] = [
-  { id: 'drinking', label: 'drinking water', need: 2, sensitive: true },
-  { id: 'bathing', label: 'bathing water', need: 2, sensitive: true },
-  { id: 'laundry', label: 'laundry', need: 3, sensitive: false },
-  { id: 'garden', label: 'watering the garden', need: 5, sensitive: false },
-];
-
-function parseScenario(params: unknown): { wellCapacity: number; tasks: Task[] } {
-  const raw = (params ?? {}) as { wellCapacity?: unknown; tasks?: unknown };
-  const wellCapacity =
-    typeof raw.wellCapacity === 'number' && raw.wellCapacity > 0 ? raw.wellCapacity : DEFAULT_CAPACITY;
-  const tasks = Array.isArray(raw.tasks)
-    ? raw.tasks
-        .filter((t): t is Record<string, unknown> => !!t && typeof t === 'object')
-        .map((t, i) => ({
-          id: typeof t.id === 'string' && t.id ? t.id : `task-${i}`,
-          label: typeof t.label === 'string' && t.label ? t.label : `need ${i + 1}`,
-          need: typeof t.need === 'number' && t.need > 0 ? t.need : 1,
-          sensitive: t.sensitive === true,
-        }))
-    : [];
-  return { wellCapacity, tasks: tasks.length ? tasks : DEFAULT_TASKS };
-}
+import { parseScenario, type Source, type Task } from './scenario';
 
 /** The Well and the Pipe: route needs between a private well and a shared pipe. */
 export class MechanicWell extends MechanicElement {

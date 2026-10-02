@@ -1,9 +1,9 @@
-import type { Condition, Content, DanglingRef, LinkDiagnostics } from './schema';
+import type { Condition, Content, ContentDiagnostics, DanglingRef } from './schema';
 
 export class ContentCheckError extends Error {}
 
 /** Resolve every reference in the content graph, collecting every miss. */
-export function linkContent(content: Content): LinkDiagnostics {
+export function linkContent(content: Content): Pick<ContentDiagnostics, 'dangling'> {
   const dangling: DanglingRef[] = [];
   const conceptIds = new Set(Object.keys(content.concepts));
   const characterIds = new Set(Object.keys(content.characters));

@@ -1,39 +1,6 @@
 import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
-
-interface Drop {
-  id: string;
-  label: string;
-  essential: boolean;
-}
-
-const DEFAULT_CAPACITY = 5;
-const DEFAULT_DROPS: Drop[] = [
-  { id: 'seed', label: 'seed', essential: true },
-  { id: 'chatter', label: 'chatter', essential: false },
-  { id: 'root', label: 'root', essential: true },
-  { id: 'rumour', label: 'rumour', essential: false },
-  { id: 'shoot', label: 'shoot', essential: true },
-  { id: 'echo', label: 'echo', essential: false },
-  { id: 'bloom', label: 'bloom', essential: true },
-  { id: 'harvest', label: 'harvest', essential: true },
-];
-
-function parseScenario(params: unknown): { capacity: number; drops: Drop[] } {
-  const raw = (params ?? {}) as { capacity?: unknown; drops?: unknown };
-  const capacity =
-    typeof raw.capacity === 'number' && Number.isInteger(raw.capacity) && raw.capacity > 0 ? raw.capacity : DEFAULT_CAPACITY;
-  const drops = Array.isArray(raw.drops)
-    ? raw.drops
-        .filter((d): d is Record<string, unknown> => !!d && typeof d === 'object')
-        .map((d, i) => ({
-          id: typeof d.id === 'string' && d.id ? d.id : `drop-${i}`,
-          label: typeof d.label === 'string' && d.label ? d.label : `drop ${i + 1}`,
-          essential: d.essential === true,
-        }))
-    : [];
-  return { capacity, drops: drops.length ? drops : DEFAULT_DROPS };
-}
+import { parseScenario, type Drop } from './scenario';
 
 /** The Rain-Gauge: a fixed-size cup, more drops than room. Keep only what is needed. */
 export class MechanicRainGauge extends MechanicElement {

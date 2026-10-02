@@ -1,64 +1,6 @@
 import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
-
-interface Traveller {
-  id: string;
-  label: string;
-  attributes: string[];
-  shouldEnter: boolean;
-}
-
-interface Order {
-  id: string;
-  text: string;
-  allow: string[];
-  deny: string[];
-}
-
-const DEFAULT_TRAVELLERS: Traveller[] = [
-  { id: 'merchant-lantern', label: 'the merchant with a lantern', attributes: ['merchant', 'lantern'], shouldEnter: true },
-  { id: 'merchant-dark', label: 'the merchant with no lantern', attributes: ['merchant'], shouldEnter: false },
-  { id: 'pilgrim-lantern', label: 'the pilgrim with a lantern', attributes: ['pilgrim', 'lantern'], shouldEnter: true },
-  { id: 'pilgrim-dark', label: 'the pilgrim with no lantern', attributes: ['pilgrim'], shouldEnter: false },
-];
-const DEFAULT_ORDERS: Order[] = [
-  { id: 'any-lantern', text: 'Admit anyone carrying a lantern.', allow: ['lantern'], deny: [] },
-  { id: 'merchants-only', text: 'Admit merchants; turn away pilgrims.', allow: ['merchant'], deny: [] },
-  { id: 'everyone', text: 'Admit everyone, and turn away no one.', allow: [], deny: [] },
-  { id: 'carrying-nothing', text: 'Admit only those who carry nothing.', allow: [], deny: ['lantern'] },
-];
-
-function stringList(value: unknown): string[] {
-  return Array.isArray(value) ? value.filter((v): v is string => typeof v === 'string') : [];
-}
-
-function parseScenario(params: unknown): { travellers: Traveller[]; orders: Order[] } {
-  const raw = (params ?? {}) as { travellers?: unknown; orders?: unknown };
-  const travellers = Array.isArray(raw.travellers)
-    ? raw.travellers
-        .filter((t): t is Record<string, unknown> => !!t && typeof t === 'object')
-        .map((t, i) => ({
-          id: typeof t.id === 'string' && t.id ? t.id : `traveller-${i}`,
-          label: typeof t.label === 'string' && t.label ? t.label : `traveller ${i + 1}`,
-          attributes: stringList(t.attributes),
-          shouldEnter: t.shouldEnter === true,
-        }))
-    : [];
-  const orders = Array.isArray(raw.orders)
-    ? raw.orders
-        .filter((o): o is Record<string, unknown> => !!o && typeof o === 'object')
-        .map((o, i) => ({
-          id: typeof o.id === 'string' && o.id ? o.id : `order-${i}`,
-          text: typeof o.text === 'string' && o.text ? o.text : `order ${i + 1}`,
-          allow: stringList(o.allow),
-          deny: stringList(o.deny),
-        }))
-    : [];
-  return {
-    travellers: travellers.length ? travellers : DEFAULT_TRAVELLERS,
-    orders: orders.length ? orders : DEFAULT_ORDERS,
-  };
-}
+import { admits, parseScenario, type Order, type Traveller } from './scenario';
 
 /** The Gate of Orders: find the literal order that survives every edge case. */
 export class MechanicGate extends MechanicElement {
@@ -143,16 +85,9 @@ export class MechanicGate extends MechanicElement {
     super.setContext(context);
   }
 
-  private admits(order: Order, traveller: Traveller): boolean {
-    return (
-      order.allow.every((a) => traveller.attributes.includes(a)) &&
-      order.deny.every((d) => !traveller.attributes.includes(d))
-    );
-  }
-
   private failuresFor(order: Order): string[] {
     return this.travellers
-      .filter((traveller) => this.admits(order, traveller) !== traveller.shouldEnter)
+      .filter((traveller) => admits(order, traveller) !== traveller.shouldEnter)
       .map((traveller) => traveller.id);
   }
 

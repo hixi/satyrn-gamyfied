@@ -159,6 +159,14 @@ export interface DanglingRef {
   target: string;
 }
 
-export interface LinkDiagnostics {
+/** A problem with an authored mechanic scenario, found at build time. */
+export interface ScenarioProblem {
+  mechanic: string;
+  problem: string;
+}
+
+/** Everything the content build can report about the authored content. */
+export interface ContentDiagnostics {
   dangling: DanglingRef[];
+  scenarioProblems: ScenarioProblem[];
 }

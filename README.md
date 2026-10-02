@@ -99,6 +99,11 @@ mechanic, a concept, an achievement — and that the references between parts ar
   references, duplicate ids, cycles, and unreachable worlds. In development it
   warns and the game shows a visible placeholder; in `build` and in CI it
   **fails hard**.
+- **Every mechanic's scenario is validated at build time** against its own
+  logic. A world whose puzzle is unsolvable — more essential drops than the cup
+  holds, no check that can fail, an ambiguous order, sensitive needs past the
+  well — fails the build. Each validator lives beside the mechanic and reuses
+  its parser, so the check cannot drift from the mechanic itself.
 - **Every mechanic implements one documented contract** (`MechanicElement`): it
   receives a read-only context, emits typed progress/complete/evidence events,
   owns its styles, imports no other mechanic, and must declare an accessible
@@ -117,7 +122,7 @@ docs/superpowers/  the design spec and the four wave plans
 
 ```sh
 npm run dev           # content build + Vite dev server
-npm run check:content # strict link/content check (fails on any problem, or a stale bundle)
+npm run check:content # strict check: links, scenarios, and a stale bundle
 npm run typecheck     # tsc --noEmit
 npm test              # unit and component tests (Vitest + jsdom)
 npm run e2e           # Playwright browser walk of every act

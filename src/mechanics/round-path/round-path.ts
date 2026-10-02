@@ -1,42 +1,6 @@
 import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
-
-interface Step {
-  id: string;
-  label: string;
-}
-
-const DEFAULT_STEPS: Step[] = [
-  { id: 'fetch-grain', label: 'fetch grain' },
-  { id: 'grind-flour', label: 'grind flour' },
-  { id: 'bag-flour', label: 'bag flour' },
-  { id: 'pat-post', label: 'pat the post' },
-  { id: 'find-nothing', label: 'find nothing new' },
-];
-const DEFAULT_CYCLE_START = 3;
-const DEFAULT_CYCLE_LENGTH = 2;
-
-function parseScenario(params: unknown): { steps: Step[]; cycleStart: number; cycleLength: number } {
-  const raw = (params ?? {}) as { steps?: unknown; cycleStart?: unknown; cycleLength?: unknown };
-  const steps = Array.isArray(raw.steps)
-    ? raw.steps
-        .filter((s): s is Record<string, unknown> => !!s && typeof s === 'object')
-        .map((s, i) => ({
-          id: typeof s.id === 'string' && s.id ? s.id : `step-${i}`,
-          label: typeof s.label === 'string' && s.label ? s.label : `step ${i + 1}`,
-        }))
-    : [];
-  const resolved = steps.length ? steps : DEFAULT_STEPS;
-  const cycleLength =
-    typeof raw.cycleLength === 'number' && raw.cycleLength > 0 && raw.cycleLength <= resolved.length
-      ? raw.cycleLength
-      : Math.min(DEFAULT_CYCLE_LENGTH, resolved.length);
-  const cycleStart =
-    typeof raw.cycleStart === 'number' && raw.cycleStart >= 0 && raw.cycleStart + cycleLength <= resolved.length
-      ? raw.cycleStart
-      : Math.max(0, resolved.length - cycleLength);
-  return { steps: resolved, cycleStart, cycleLength };
-}
+import { parseScenario, type Step } from './scenario';
 
 /** The Round Path: spot the repeating block and break the loop without losing the work. */
 export class MechanicRoundPath extends MechanicElement {

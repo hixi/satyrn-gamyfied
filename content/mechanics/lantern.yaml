@@ -7,5 +7,3 @@ description: >-
 a11y: >-
   Move the lantern with the arrow keys and press Enter to light a spot. You can
   also continue without playing.
-params:
-  spots: 4
