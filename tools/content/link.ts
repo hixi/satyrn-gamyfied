@@ -22,8 +22,10 @@ export function linkContent(content: Content): LinkDiagnostics {
     } else if ('not' in condition) {
       walkCondition(from, `${field}.not`, condition.not);
     } else {
-      if (condition.world) ref(from, field, condition.world, worldIds.has(condition.world));
-      if (condition.mechanic) ref(from, field, condition.mechanic, mechanicIds.has(condition.mechanic));
+      const world = 'world' in condition ? condition.world : undefined;
+      const mechanic = 'mechanic' in condition ? condition.mechanic : undefined;
+      if (world) ref(from, field, world, worldIds.has(world));
+      if (mechanic) ref(from, field, mechanic, mechanicIds.has(mechanic));
     }
   };
 

@@ -8,13 +8,14 @@
   "scripts": {
     "build:content": "tsx tools/build-content.ts",
     "check:content": "tsx tools/check-content.ts",
+    "typecheck": "tsc --noEmit",
     "predev": "npm run build:content",
     "dev": "vite",
     "prebuild": "npm run check:content",
     "build": "vite build",
     "test": "vitest run",
     "e2e": "playwright test",
-    "check": "npm run check:content && npm run test && npm run build && npm run e2e"
+    "check": "npm run check:content && npm run typecheck && npm run test && npm run build && npm run e2e"
   },
   "dependencies": {
     "lit": "^3.2.1"

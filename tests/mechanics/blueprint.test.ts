@@ -41,7 +41,12 @@ describe('blueprint', () => {
   it('does not reveal a passing spec before it is built', async () => {
     const { el } = mountMechanic('mechanic-blueprint', 'mechanic.blueprint', 'world.blueprint-and-mason', authored);
     await el.updateComplete;
-    expect(el.shadowRoot.textContent).not.toContain('the mason begins');
+    expect(el.lastBuild).toBe('');
+    expect(el.shadowRoot.querySelector('.result')).toBeFalsy();
+    const text = el.shadowRoot.textContent ?? '';
+    for (const phrase of ['mason begins', 'matches the drawing']) {
+      expect(text).not.toContain(phrase);
+    }
   });
 
   it('falls back to a default scenario when params are malformed', async () => {

@@ -29,6 +29,14 @@ describe('commons garden', () => {
     expect(el.plant()).toBe('no-seed');
   });
 
+  it('keeps the Bead name to a sane length', async () => {
+    const { el } = mountMechanic('mechanic-garden', 'mechanic.commons-garden', 'world.commons-garden', authored);
+    await el.updateComplete;
+    el.setName('x'.repeat(200));
+    expect(el.name.length).toBe(60);
+    expect(el.shadowRoot.querySelector('input')?.getAttribute('maxlength')).toBe('60');
+  });
+
   it('completes after visiting a community Bead and planting', async () => {
     const { el, events } = mountMechanic('mechanic-garden', 'mechanic.commons-garden', 'world.commons-garden', authored);
     await el.updateComplete;

@@ -1,8 +1,8 @@
-import { CURRENT_STATE_VERSION, migrate } from './migrations';
-import { createInitialState, type GameState, type StoragePort } from './state';
+import { migrate } from './migrations';
+import { createInitialState, CURRENT_STATE_VERSION, type GameState, type StoragePort } from './state';
 
 export type { StoragePort } from './state';
-export { CURRENT_STATE_VERSION } from './migrations';
+export { CURRENT_STATE_VERSION } from './state';
 
 const STORAGE_KEY = 'satyrn-book-as-game:v1';
 

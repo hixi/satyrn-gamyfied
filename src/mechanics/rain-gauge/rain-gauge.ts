@@ -100,14 +100,14 @@ export class MechanicRainGauge extends MechanicElement {
   declare decided: string[];
   declare completed: boolean;
 
-  private essentialIds: Set<string>;
+  private essentialIds = new Set<string>();
 
   constructor() {
     super();
     const scenario = parseScenario(undefined);
     this.capacity = scenario.capacity;
     this.drops = scenario.drops;
-    (this as { essentialIds: Set<string> }).essentialIds = new Set(scenario.drops.filter((d) => d.essential).map((d) => d.id));
+    this.essentialIds = new Set(scenario.drops.filter((d) => d.essential).map((d) => d.id));
     this.kept = [];
     this.decided = [];
     this.completed = false;
@@ -117,7 +117,7 @@ export class MechanicRainGauge extends MechanicElement {
     const scenario = parseScenario(context.mechanic.params);
     this.capacity = scenario.capacity;
     this.drops = scenario.drops;
-    (this as { essentialIds: Set<string> }).essentialIds = new Set(scenario.drops.filter((d) => d.essential).map((d) => d.id));
+    this.essentialIds = new Set(scenario.drops.filter((d) => d.essential).map((d) => d.id));
     this.kept = [];
     this.decided = [];
     this.completed = false;

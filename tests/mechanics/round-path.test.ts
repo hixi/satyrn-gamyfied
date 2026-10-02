@@ -33,6 +33,15 @@ describe('round path', () => {
     expect(el.breakLoop()).toBe('not-selected');
   });
 
+  it('stopMule clears the selection and never completes', async () => {
+    const { el, events } = mountMechanic('mechanic-round-path', 'mechanic.round-path', 'world.round-path', authored);
+    await el.updateComplete;
+    el.select(authored.steps[0].id);
+    expect(el.stopMule()).toBe('stopped');
+    expect(el.selection).toEqual([]);
+    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
+  });
+
   it('falls back to a default scenario when params are malformed', async () => {
     const { el } = mountMechanic('mechanic-round-path', 'mechanic.round-path', 'world.round-path', { steps: 'nope' });
     await el.updateComplete;

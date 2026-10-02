@@ -1,16 +1,24 @@
-import { createInitialState, applyEvent } from '../../src/store/state';
+import { createInitialState, applyEvent, type GameState } from '../../src/store/state';
 import { getContent } from '../../src/content';
 import type { MechanicContext } from '../../src/mechanics/context';
 
 /**
  * Mount a mechanic behind a recorded, event-applying store. When `params` is
  * given it replaces the content mechanic's params for this mount, so tests can
- * inject custom or malformed scenarios.
+ * inject custom or malformed scenarios. `state` overrides the initial persisted
+ * state (e.g. settings).
  */
-export function mountMechanic(tag: string, mechanicId: string, worldId: string, params?: Record<string, unknown>) {
+export function mountMechanic(
+  tag: string,
+  mechanicId: string,
+  worldId: string,
+  params?: Record<string, unknown>,
+  state?: Partial<GameState>,
+) {
   const el: any = document.createElement(tag);
   const events: any[] = [];
-  let state = createInitialState();
+  let current: GameState = { ...createInitialState(), ...state };
+  const listeners = new Set<(s: GameState) => void>();
   const content = getContent();
   const base = content.mechanics[mechanicId];
   const context: MechanicContext = {
@@ -18,11 +26,17 @@ export function mountMechanic(tag: string, mechanicId: string, worldId: string, 
     world: content.worlds[worldId],
     content: { getConcept: (id) => content.concepts[id], getCharacter: (id) => content.characters[id] },
     store: {
-      getState: () => state,
-      subscribe: () => () => {},
+      getState: () => current,
+      subscribe: (fn) => {
+        listeners.add(fn);
+        return () => {
+          listeners.delete(fn);
+        };
+      },
       dispatch: (e) => {
         events.push(e);
-        state = applyEvent(state, e);
+        current = applyEvent(current, e);
+        for (const fn of listeners) fn(current);
       },
     },
     dialogue: { open: () => {} },

@@ -3,6 +3,12 @@ import { buildContent } from './content/build';
 
 const OPTS = { rootDir: 'content', outFile: 'src/generated/content.ts', strict: false };
 
+/** Whether a changed path is inside the content directory (any platform). */
+function isContentPath(path: string): boolean {
+  const normalized = path.split(/[\\/]/);
+  return normalized.includes('content');
+}
+
 /** Build the content bundle at startup and rebuild it when `content/` changes. */
 export function contentPlugin(): Plugin {
   return {
@@ -20,15 +26,12 @@ export function contentPlugin(): Plugin {
           console.error((error as Error).message);
         }
       };
-      server.watcher.on('change', (path) => {
-        if (path.includes('/content/')) void rebuild();
-      });
-      server.watcher.on('add', (path) => {
-        if (path.includes('/content/')) void rebuild();
-      });
-      server.watcher.on('unlink', (path) => {
-        if (path.includes('/content/')) void rebuild();
-      });
+      const onChange = (path: string) => {
+        if (isContentPath(path)) void rebuild();
+      };
+      server.watcher.on('change', onChange);
+      server.watcher.on('add', onChange);
+      server.watcher.on('unlink', onChange);
     },
   };
 }

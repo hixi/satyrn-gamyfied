@@ -44,6 +44,9 @@ export class MechanicLantern extends MechanicElement {
         transition: none;
       }
     }
+    :host([data-reduced-motion]) .glow {
+      transition: none;
+    }
     .fallback {
       margin-block-start: 0.6rem;
     }
@@ -98,6 +101,11 @@ export class MechanicLantern extends MechanicElement {
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('keydown', this.onKeyDown);
+  }
+
+  protected updated(): void {
+    // Reflect the persisted reduced-motion setting, alongside the CSS media query.
+    this.toggleAttribute('data-reduced-motion', this.reducedMotion);
   }
 
   /** Place the lantern on a required spot. Exposed for the keyboard path and tests. */

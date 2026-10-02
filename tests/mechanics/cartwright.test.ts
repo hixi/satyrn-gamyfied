@@ -44,6 +44,18 @@ describe('cartwright', () => {
     expect(el.components.length).toBeGreaterThan(0);
   });
 
+  it('clears the previous result when a slot is changed', async () => {
+    const { el } = mountMechanic('mechanic-cartwright', 'mechanic.cartwright', 'world.cartwrights-yard', authored);
+    await el.updateComplete;
+    el.setSlot('work', byType('work').id);
+    el.setSlot('limit', byType('limit').id);
+    el.setSlot('check', byType('verify').id);
+    el.run();
+    expect(el.lastResult).toBe('success');
+    el.setSlot('work', byType('work').id);
+    expect(el.lastResult).toBe('');
+  });
+
   it('completes via the accessible continue control', async () => {
     const { el, events } = mountMechanic('mechanic-cartwright', 'mechanic.cartwright', 'world.cartwrights-yard', authored);
     await el.updateComplete;

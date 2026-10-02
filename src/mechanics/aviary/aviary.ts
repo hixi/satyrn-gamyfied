@@ -186,7 +186,9 @@ export class MechanicAviary extends MechanicElement {
   /** Assign each task a bird that fits, using the solver. Used by tests and the hint. */
   solve(): void {
     const solved = uniqueMatchingTask(this.birds, this.tasks);
-    for (const [taskId, birdId] of solved) this.assignments[taskId] = birdId;
+    const next = { ...this.assignments };
+    for (const [taskId, birdId] of solved) next[taskId] = birdId;
+    this.assignments = next;
     this.emitProgress(this.satisfiedCount() / this.tasks.length);
     this.check();
     this.requestUpdate();

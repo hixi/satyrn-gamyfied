@@ -5,10 +5,10 @@ import { getContent } from '../../src/content';
 
 registerMechanics();
 
-function mount() {
+function mount(settings?: { reducedMotion: boolean }) {
   const el: any = document.createElement('mechanic-lantern');
   const events: any[] = [];
-  let state = createInitialState();
+  let state = { ...createInitialState(), ...(settings ? { settings } : {}) };
   const context = {
     mechanic: { id: 'mechanic.lantern', element: 'mechanic-lantern', title: 't', description: 'd', a11y: 'a', params: {} },
     world: { id: 'world.lantern-room', title: 'w', act: 'prologue', order: 0, concepts: [], mechanic: 'mechanic.lantern', summary: 's', intro: 'i' },
@@ -58,5 +58,15 @@ describe('lantern mechanic', () => {
     await el.updateComplete;
     expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
     expect(events.some((e) => e.type === 'evidence.submitted' && (e.evidence as any).usedFallback === true)).toBe(true);
+  });
+
+  it('marks the element when the player asked for reduced motion', async () => {
+    const moving = mount({ reducedMotion: false });
+    await moving.el.updateComplete;
+    expect(moving.el.hasAttribute('data-reduced-motion')).toBe(false);
+
+    const still = mount({ reducedMotion: true });
+    await still.el.updateComplete;
+    expect(still.el.hasAttribute('data-reduced-motion')).toBe(true);
   });
 });

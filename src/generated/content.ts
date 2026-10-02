@@ -293,7 +293,7 @@ export const content: Content = {
       ],
       "mechanic": "mechanic.cartwright",
       "summary": "A cart, a horse, a market, and the rig that gets one to the other.",
-      "intro": "The Cartwright sets three empty slots before you. \"The horse is willing,\" she says. \"It is the rig that decides whether it arrives.\" "
+      "intro": "The Cartwright sets three empty slots before you. \"The horse is willing,\" she says. \"It is the rig that decides whether it arrives.\""
     },
     "world.commons-garden": {
       "id": "world.commons-garden",
@@ -1075,6 +1075,11 @@ export const content: Content = {
               "id": "ask",
               "text": "What if I am not sure of the number yet?",
               "next": "answer"
+            },
+            {
+              "id": "mason",
+              "text": "Let me ask the Mason what she needs.",
+              "next": "mason"
             }
           ]
         },
@@ -1082,6 +1087,18 @@ export const content: Content = {
           "id": "answer",
           "speaker": "character.draughtswoman",
           "text": "Then you are not ready to build. A spec you cannot check is a promise you cannot keep.",
+          "choices": [
+            {
+              "id": "mason",
+              "text": "Let me ask the Mason what she needs.",
+              "next": "mason"
+            }
+          ]
+        },
+        "mason": {
+          "id": "mason",
+          "speaker": "character.mason",
+          "text": "Give me numbers I can lay a stone against, and I will build it and then prove it fits. Give me a wish and I will stand here, waiting, all day.",
           "choices": []
         }
       }

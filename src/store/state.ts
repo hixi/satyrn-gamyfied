@@ -31,7 +31,8 @@ export interface StoragePort {
   removeItem(key: string): void;
 }
 
-const CURRENT_STATE_VERSION = 1;
+/** Bump when `GameState` changes shape; add a migration for the old version. */
+export const CURRENT_STATE_VERSION = 1;
 
 export function createInitialState(): GameState {
   return {

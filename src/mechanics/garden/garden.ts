@@ -13,6 +13,8 @@ interface CommunityBead {
   about: string;
 }
 
+const MAX_NAME_LENGTH = 60;
+
 const DEFAULT_SEEDS: Seed[] = [
   { id: 'seed-attention', name: 'Attention' },
   { id: 'seed-evidence', name: 'Evidence' },
@@ -153,7 +155,7 @@ export class MechanicGarden extends MechanicElement {
   }
 
   setName(value: string): void {
-    this.name = value;
+    this.name = value.slice(0, MAX_NAME_LENGTH);
     this.requestUpdate();
   }
 
@@ -207,6 +209,7 @@ export class MechanicGarden extends MechanicElement {
       <input
         id="bead-name"
         type="text"
+        maxlength=${MAX_NAME_LENGTH}
         .value=${this.name}
         @input=${(event: Event) => this.setName((event.target as HTMLInputElement).value)}
       />

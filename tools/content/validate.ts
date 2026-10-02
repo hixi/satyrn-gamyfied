@@ -1,4 +1,4 @@
-import type { ZodType } from 'zod';
+import type { ZodType, ZodTypeDef } from 'zod';
 import {
   AchievementSchema,
   CharacterSchema,
@@ -16,7 +16,7 @@ export class ContentValidationError extends Error {}
 
 function parseBucket<T>(
   bucket: string,
-  schema: ZodType<T>,
+  schema: ZodType<T, ZodTypeDef, unknown>,
   record: Record<string, unknown>,
 ): Record<string, T> {
   const out: Record<string, T> = {};

@@ -42,4 +42,13 @@ describe('aviary', () => {
     await el.updateComplete;
     expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
   });
+
+  it('solve replaces assignments rather than mutating them in place', async () => {
+    const { el } = mountMechanic('mechanic-aviary', 'mechanic.aviary', 'world.aviary-of-whispers', authored);
+    await el.updateComplete;
+    const before = el.assignments;
+    el.solve();
+    expect(el.assignments).not.toBe(before);
+    expect(before).toEqual({});
+  });
 });

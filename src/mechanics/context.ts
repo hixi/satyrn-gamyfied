@@ -36,10 +36,24 @@ export abstract class MechanicElement extends LitElement {
   static accessibilityDescription = '';
 
   protected context?: MechanicContext;
+  private unsubscribe?: () => void;
 
   setContext(context: MechanicContext): void {
+    this.unsubscribe?.();
     this.context = context;
+    this.unsubscribe = context.store.subscribe(() => this.requestUpdate());
     this.requestUpdate();
+  }
+
+  disconnectedCallback(): void {
+    super.disconnectedCallback();
+    this.unsubscribe?.();
+    this.unsubscribe = undefined;
+  }
+
+  /** Whether the player asked for reduced motion. Read from persisted settings. */
+  protected get reducedMotion(): boolean {
+    return this.context?.store.getState().settings.reducedMotion ?? false;
   }
 
   protected emitProgress(value: number): void {

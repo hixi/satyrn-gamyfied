@@ -1,8 +1,3 @@
-interface Registration {
-  ctor: CustomElementConstructor;
-  element: string;
-}
-
 import { MechanicLantern } from './lantern/lantern';
 import { MechanicRainGauge } from './rain-gauge/rain-gauge';
 import { MechanicAviary } from './aviary/aviary';
@@ -13,6 +8,11 @@ import { MechanicAssayer } from './assayer/assayer';
 import { MechanicBlueprint } from './blueprint/blueprint';
 import { MechanicWell } from './well/well';
 import { MechanicGarden } from './garden/garden';
+
+interface Registration {
+  ctor: CustomElementConstructor;
+  element: string;
+}
 
 const registry = new Map<string, Registration>();
 

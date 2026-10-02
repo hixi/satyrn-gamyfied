@@ -93,6 +93,7 @@ export const DialogueChoiceSchema = z.object({
   next: z.string().min(1).optional(),
   condition: ConditionSchema.optional(),
 });
+export type DialogueChoice = z.infer<typeof DialogueChoiceSchema>;
 
 export const DialogueNodeSchema = z.object({
   id: z.string().min(1),

@@ -115,11 +115,12 @@ docs/superpowers/  the design spec and the four wave plans
 ## Development
 
 ```sh
-npm run dev          # content build + Vite dev server
-npm run check:content # strict link/content check (fails on any problem)
-npm test             # unit and component tests (Vitest + jsdom)
-npm run e2e          # Playwright browser walk of every act
-npm run check        # everything: content, unit, build, e2e
+npm run dev           # content build + Vite dev server
+npm run check:content # strict link/content check (fails on any problem, or a stale bundle)
+npm run typecheck     # tsc --noEmit
+npm test              # unit and component tests (Vitest + jsdom)
+npm run e2e           # Playwright browser walk of every act
+npm run check         # everything: content, typecheck, unit, build, e2e
 ```
 
 The test suite proves the checks in both directions: broken fixtures (dangling,

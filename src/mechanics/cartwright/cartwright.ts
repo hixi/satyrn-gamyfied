@@ -172,6 +172,7 @@ export class MechanicCartwright extends MechanicElement {
 
   setSlot(slotId: string, componentId: string): void {
     this.chosen = { ...this.chosen, [slotId]: componentId };
+    this.lastResult = '';
     const fitted = this.slots.filter((slot) => this.chosen[slot.id]).length;
     this.emitProgress(fitted / this.slots.length);
     this.requestUpdate();

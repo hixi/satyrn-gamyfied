@@ -3,6 +3,7 @@ import { MechanicElement } from '../context';
 
 type Reading = 'sound' | 'unsound';
 type CheckKind = 'vanity' | 'honest' | 'broken';
+type RelyResult = 'can-fail' | 'cannot-fail' | 'always-fails';
 
 interface Item {
   id: string;
@@ -125,7 +126,7 @@ export class MechanicAssayer extends MechanicElement {
   declare checks: Check[];
   declare reliedCheck: string;
   declare marked: string[];
-  declare lastReading: 'can-fail' | 'cannot-fail' | 'always-fails' | '';
+  declare lastReading: RelyResult | '';
   declare completed: boolean;
 
   constructor() {
@@ -163,7 +164,7 @@ export class MechanicAssayer extends MechanicElement {
   }
 
   /** Rely on a check; a check that cannot fail (or always fails) is refused. */
-  relyOn(checkId: string): 'can-fail' | 'cannot-fail' | 'always-fails' {
+  relyOn(checkId: string): RelyResult {
     const check = this.checks.find((c) => c.id === checkId);
     if (!check) return 'cannot-fail';
     this.reliedCheck = checkId;
@@ -201,7 +202,7 @@ export class MechanicAssayer extends MechanicElement {
     return html`<p>Rely on a check that can fail, then mark the unsound weight.</p>`;
   }
 
-  private readingWords(result: 'can-fail' | 'cannot-fail' | 'always-fails' | ''): string {
+  private readingWords(result: RelyResult | ''): string {
     switch (result) {
       case 'cannot-fail':
         return 'This scale cannot fail, so it proves nothing.';

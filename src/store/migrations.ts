@@ -1,6 +1,4 @@
-import { createInitialState, type GameState } from './state';
-
-export const CURRENT_STATE_VERSION = 1;
+import { createInitialState, CURRENT_STATE_VERSION, type GameState } from './state';
 
 type Migration = (state: Record<string, unknown>) => Record<string, unknown>;
 
