@@ -99,6 +99,18 @@ export class SatyrnApp extends LitElement {
     this.store?.dispatch({ type: 'mode.changed', mode });
   }
 
+  private currentMode(): 'thread' | 'wander' {
+    return this.store?.getState().mode ?? 'thread';
+  }
+
+  protected updated(): void {
+    // The `#/thread` deep link selects Thread mode, so the toggle agrees with
+    // the view. Dispatching does not navigate, so there is no loop.
+    if (this.route.name === 'thread' && this.currentMode() !== 'thread') {
+      this.setMode('thread');
+    }
+  }
+
   private renderDiagnostics() {
     const { dangling, scenarioProblems } = getDiagnostics();
     if (!dangling.length && !scenarioProblems.length) return null;
@@ -113,7 +125,7 @@ export class SatyrnApp extends LitElement {
 
   render() {
     const ui = getContent().strings['strings.ui']?.values ?? {};
-    const mode = this.store?.getState().mode ?? 'thread';
+    const mode = this.currentMode();
     return html`
       <header>
         <h1>${ui.appTitle ?? 'Satyrn'}</h1>
@@ -133,12 +145,17 @@ export class SatyrnApp extends LitElement {
   }
 
   private renderRouteContent() {
+    const mode = this.currentMode();
     switch (this.route.name) {
       case 'map':
       case 'thread':
-        return html`<satyrn-map .store=${this.store}></satyrn-map>`;
+        return html`<satyrn-map .store=${this.store} .mode=${mode}></satyrn-map>`;
       case 'world':
-        return html`<satyrn-world .worldId=${this.route.worldId} .store=${this.store}></satyrn-world>`;
+        return html`<satyrn-world
+          .worldId=${this.route.worldId}
+          .store=${this.store}
+          .mode=${mode}
+        ></satyrn-world>`;
       case 'concept':
         return html`<satyrn-concept .conceptId=${this.route.conceptId}></satyrn-concept>`;
       case 'journal':

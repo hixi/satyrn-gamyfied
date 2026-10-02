@@ -79,4 +79,19 @@ describe('shell', () => {
     expect(w.renderRoot.querySelector('mechanic-aviary')).toBeTruthy();
     expect(w.renderRoot.querySelector('mechanic-rain-gauge')).toBeFalsy();
   });
+
+  it('passes the stored mode to the map, and the thread route selects thread mode', async () => {
+    const app: any = document.createElement('satyrn-app');
+    document.body.append(app);
+    await app.updateComplete;
+    app.renderRoute({ name: 'thread' });
+    await app.updateComplete;
+    await new Promise((r) => setTimeout(r, 0));
+    expect(app.store.getState().mode).toBe('thread');
+    expect(app.renderRoot.querySelector('satyrn-map')?.mode).toBe('thread');
+
+    app.store.dispatch({ type: 'mode.changed', mode: 'wander' });
+    await app.updateComplete;
+    expect(app.renderRoot.querySelector('satyrn-map')?.mode).toBe('wander');
+  });
 });
