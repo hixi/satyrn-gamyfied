@@ -222,10 +222,15 @@ export class MechanicGarden extends MechanicElement {
         )}
       </div>
       <button type="button" @click=${() => this.plant()}>Plant your Bead</button>
-      ${this.plantedName
+      ${this.plantedName && this.completed
         ? html`<div class="planted">
             <strong>${this.plantedName}</strong> — planted. It stands with the others now, and the garden is one Bead larger.
           </div>`
+        : null}
+      ${this.plantedName && !this.completed
+        ? html`<p class="planted">
+            The Gardener waits. Wander one of the Beads above first, then plant <strong>${this.plantedName}</strong>.
+          </p>`
         : null}
       ${this.renderAccessibleShell()}
     `;

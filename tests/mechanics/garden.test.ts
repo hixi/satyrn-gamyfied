@@ -51,6 +51,16 @@ describe('commons garden', () => {
     expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
   });
 
+  it('does not claim the Bead stands in the garden until the commons has been wandered', async () => {
+    const { el } = mountMechanic('mechanic-garden', 'mechanic.commons-garden', 'world.commons-garden', authored);
+    await el.updateComplete;
+    el.setName('The Quiet Forge');
+    el.chooseSeed(authored.seeds[0].id);
+    el.plant();
+    await el.updateComplete;
+    expect(el.shadowRoot.textContent).not.toContain('It stands with the others now');
+  });
+
   it('falls back to a default scenario when params are malformed', async () => {
     const { el } = mountMechanic('mechanic-garden', 'mechanic.commons-garden', 'world.commons-garden', { seeds: 0 });
     await el.updateComplete;
