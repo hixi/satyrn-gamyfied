@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { getContent } from '../content';
+import { threadSequence, neighbourInSequence } from '../thread';
 import './satyrn-companion';
 import { createInitialState } from '../store/state';
 import type { MechanicContext, MechanicElement } from '../mechanics/context';
@@ -25,11 +26,31 @@ export class SatyrnWorld extends LitElement {
       background: var(--satyrn-yellow, #e3d678);
       cursor: pointer;
     }
+    .thread-nav {
+      margin-block-start: 1rem;
+      padding-block-start: 0.75rem;
+      border-block-start: 1px solid var(--satyrn-charcoal, #383330);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: baseline;
+    }
+    .thread-nav a {
+      text-decoration: none;
+      color: var(--satyrn-yellow-dark, #433715);
+    }
+    .thread-nav .next {
+      font-weight: 600;
+    }
+    .complete {
+      font-style: italic;
+    }
   `;
 
-  static properties = { worldId: {}, store: { attribute: false } };
+  static properties = { worldId: {}, store: { attribute: false }, mode: {} };
   declare worldId: string;
   declare store?: Store;
+  declare mode: 'thread' | 'wander';
 
   private lastEnteredWorld?: string;
   private mountedMechanic?: MechanicElement;
@@ -37,6 +58,7 @@ export class SatyrnWorld extends LitElement {
   constructor() {
     super();
     this.worldId = '';
+    this.mode = 'wander';
   }
 
   protected willUpdate(changed: Map<PropertyKey, unknown>): void {
@@ -126,6 +148,25 @@ export class SatyrnWorld extends LitElement {
         )}
       </nav>
       ${registered ? html`<div data-mechanic></div>` : this.placeholder(world)}
+      ${this.renderFooter(content, world.id)}
+    `;
+  }
+
+  private renderFooter(content: ReturnType<typeof getContent>, worldId: string) {
+    const ui = content.strings['strings.ui']?.values ?? {};
+    if (this.mode !== 'thread') {
+      return html`<nav class="thread-nav"><a href="#/">${ui.backToMap ?? 'Back to the map'}</a></nav>`;
+    }
+    const next = neighbourInSequence(threadSequence(content), worldId);
+    return html`
+      <nav class="thread-nav">
+        ${next
+          ? html`<a class="next" data-next-bead href="#/world/${next}">
+              ${ui.threadContinue ?? 'Continue the Thread'} → ${content.worlds[next]?.title ?? next}
+            </a>`
+          : html`<span class="complete">${ui.threadComplete ?? 'You have walked the whole Thread.'}</span>`}
+        <a href="#/">${ui.backToThread ?? 'Back to the Thread'}</a>
+      </nav>
     `;
   }
 }
