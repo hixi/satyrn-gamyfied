@@ -360,11 +360,11 @@ Expected: FAIL — `mechanic-cartwright` is not defined.
 
 Parse `params` defensively into `goal` (positive number else 8), `slots` (non-empty array else a default of `work`/`limit`/`check`), and `components` (non-empty array else a default set matching the authored one). Expose `slots`, `components`, `goal`, `setSlot(slotId, componentId)`, and `run()`.
 
-`run()` semantics (pure, deterministic, no timers):
-1. `work` slot's component must have `type === 'work'`; otherwise return `'no-work'`.
-2. `max = components[limit].type === 'limit' ? components[limit].limit : 40`.
-3. `pos = 0`; for `i` in `0..max`: `pos += work.power`; if the `check` component has `type === 'verify'` and `pos >= goal`, return `'success'`.
-4. If `pos >= goal` return `'overshot'`, else `'ran-out'`.
+`run()` semantics (pure, deterministic, no timers). Success requires all three: a work tool, a verifier, and a limit.
+1. The `work` slot's component must have `type === 'work'`; otherwise return `'no-work'`.
+2. Without a verifier in the `check` slot, the cart never knows it arrived: return `'overshot'` if `work.power * 40 >= goal`, else `'ran-out'`.
+3. With a verifier but no limit, it knows it arrived but nothing ends the loop: return `'ran-out'`.
+4. With a verifier and a limit: `max = limit`, `pos = 0`; for `i` in `0..max`: `pos += power`; if `pos >= goal` return `'success'`. Otherwise return `'ran-out'`.
 
 On `'success'`, `emitEvidence({ result: 'success', usedFallback: false })` then `emitComplete()`. Render one `<select>` per slot, a "Send the cart" button, and the last result in words. `emitProgress` reports fitted-slot count over total before a run.
 

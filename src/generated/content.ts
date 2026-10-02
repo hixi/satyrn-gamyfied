@@ -3,6 +3,15 @@ import type { Content, LinkDiagnostics } from '../../tools/content/schema';
 
 export const content: Content = {
   "concepts": {
+    "concept.agent": {
+      "id": "concept.agent",
+      "term": "Agent",
+      "short": "A model given tools, memory, and the ability to act.",
+      "body": "An agent is a model that has been given something to do and some way to do it. It takes a step, looks at the result, and takes another. Left alone, an agent will keep stepping; whether it stops in the right place is a matter of the rig you built around it.",
+      "related": [
+        "concept.harness"
+      ]
+    },
     "concept.ai-system": {
       "id": "concept.ai-system",
       "term": "AI system",
@@ -27,6 +36,13 @@ export const content: Content = {
       "related": [
         "concept.tokens"
       ]
+    },
+    "concept.harness": {
+      "id": "concept.harness",
+      "term": "Harness",
+      "short": "The rig around the model — the loop, the limits, the checks.",
+      "body": "The harness is everything around the model that keeps it on the road: how it loops, how far it may go before it must stop, and how it knows it has arrived. A good harness lets a small model finish what a bare one would bolt past or never reach.",
+      "related": []
     },
     "concept.models": {
       "id": "concept.models",
@@ -58,6 +74,12 @@ export const content: Content = {
       "name": "the Birdwright",
       "title": "keeper of the aviary",
       "description": "She keeps birds of every temperament, because no single bird suits every errand. Choosing well is her whole craft."
+    },
+    "character.cartwright": {
+      "id": "character.cartwright",
+      "name": "the Cartwright",
+      "title": "keeper of the yard",
+      "description": "She builds the cart, but she cares more about the rig around the horse: the loop that keeps it moving, the limit that stops it, and the check that tells it when it has arrived."
     },
     "character.moon": {
       "id": "character.moon",
@@ -92,6 +114,20 @@ export const content: Content = {
       "mechanic": "mechanic.aviary",
       "summary": "Three errands, three birds, and a rule that each bird carries one.",
       "intro": "The Birdwright opens the aviary. \"Every bird is good at something,\" she says, \"and none is good at everything. Match them.\""
+    },
+    "world.cartwrights-yard": {
+      "id": "world.cartwrights-yard",
+      "title": "The Cartwright's Yard",
+      "act": "act1",
+      "order": 3,
+      "keeper": "character.cartwright",
+      "concepts": [
+        "concept.agent",
+        "concept.harness"
+      ],
+      "mechanic": "mechanic.cartwright",
+      "summary": "A cart, a horse, a market, and the rig that gets one to the other.",
+      "intro": "The Cartwright sets three empty slots before you. \"The horse is willing,\" she says. \"It is the rig that decides whether it arrives.\" "
     },
     "world.lantern-room": {
       "id": "world.lantern-room",
@@ -184,6 +220,65 @@ export const content: Content = {
         ]
       }
     },
+    "mechanic.cartwright": {
+      "id": "mechanic.cartwright",
+      "element": "mechanic-cartwright",
+      "title": "The Cartwright's Yard",
+      "description": "Rig the cart so the horse reaches the market — and stops there. Fit a work tool, a limit, and a check; a missing piece sends it bolting or stuck.",
+      "a11y": "For each slot choose a component, then send the cart. The cart must reach the market and stop. You can also continue without playing.",
+      "params": {
+        "goal": 8,
+        "slots": [
+          {
+            "id": "work",
+            "label": "how it works"
+          },
+          {
+            "id": "limit",
+            "label": "how far it may go"
+          },
+          {
+            "id": "check",
+            "label": "how it knows it arrived"
+          }
+        ],
+        "components": [
+          {
+            "id": "steady",
+            "name": "a steady work tool",
+            "type": "work",
+            "power": 2
+          },
+          {
+            "id": "tiny",
+            "name": "a tiny work tool",
+            "type": "work",
+            "power": 1
+          },
+          {
+            "id": "budget",
+            "name": "a turn budget",
+            "type": "limit",
+            "limit": 12
+          },
+          {
+            "id": "nudge",
+            "name": "a gentle nudge",
+            "type": "distraction"
+          },
+          {
+            "id": "marker",
+            "name": "a market marker",
+            "type": "verify"
+          },
+          {
+            "id": "bell",
+            "name": "a pretty bell",
+            "type": "distraction"
+          }
+        ]
+      }
+    },
     "mechanic.lantern": {
       "id": "mechanic.lantern",
       "element": "mechanic-lantern",
@@ -258,6 +353,16 @@ export const content: Content = {
         "mechanic": "mechanic.lantern"
       }
     },
+    "achievement.rigged-right": {
+      "id": "achievement.rigged-right",
+      "title": "Rigged Right",
+      "description": "Built a harness that reached the market and stopped there.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.cartwright"
+      }
+    },
     "achievement.right-bird": {
       "id": "achievement.right-bird",
       "title": "Right Bird for the Errand",
@@ -310,6 +415,30 @@ export const content: Content = {
           "id": "answer",
           "speaker": "character.birdwright",
           "text": "Then you need a bird that has both. That is why I keep such different kinds, and why I can lend each of them only once.",
+          "choices": []
+        }
+      }
+    },
+    "dialogue.cartwright.intro": {
+      "id": "dialogue.cartwright.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.cartwright",
+          "text": "A bare horse bolts. A harnessed one arrives. Three slots stand between the two.",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "What if I fit everything?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.cartwright",
+          "text": "Everything includes the pretty bell. It rings, and does nothing else. The rig is not more parts; it is the right parts.",
           "choices": []
         }
       }
@@ -386,7 +515,8 @@ export const content: Content = {
       "sequence": [
         "world.lantern-room",
         "world.rain-gauge-terrace",
-        "world.aviary-of-whispers"
+        "world.aviary-of-whispers",
+        "world.cartwrights-yard"
       ]
     }
   },
