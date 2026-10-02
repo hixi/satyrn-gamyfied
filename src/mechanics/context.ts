@@ -91,14 +91,14 @@ export abstract class MechanicElement extends LitElement {
   }
 
   /**
-   * Continue without playing: an honest skip, recorded as such. It completes the
-   * mechanic so the player is never stuck, and it records `world.skipped` so the
-   * skip is acknowledged distinctly from having solved the puzzle.
+   * Continue without playing: an honest skip, recorded as such, and *not* a
+   * completion. The player leaves with the skip acknowledgement; the lesson's
+   * achievement is earned only by solving the puzzle. Nothing marks the mechanic
+   * complete, so a player who later solves it earns the lesson too.
    */
   protected useFallback(): void {
     if (!this.context) return;
     this.context.store.dispatch({ type: 'world.skipped', world: this.context.world.id });
-    this.emitComplete();
     this.emitEvidence({ usedFallback: true });
   }
 }

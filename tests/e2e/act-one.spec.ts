@@ -11,10 +11,10 @@ test('walks all three Act I Beads', async ({ page }) => {
   for (const slug of Object.keys(TAG)) {
     await page.goto(`/#/world/world.${slug}`);
     await expect(page.locator('satyrn-world')).toBeVisible();
+    await expect(page.locator(`satyrn-world mechanic-${TAG[slug]}`)).toBeVisible();
     await page.locator(`satyrn-world mechanic-${TAG[slug]} ${FALLBACK}`).click();
   }
+  // Taking the accessible path in every world is an honest skip.
   await page.goto('/#/journal');
-  await expect(page.locator('satyrn-moon')).toContainText(/Steady Hand/i);
-  await expect(page.locator('satyrn-moon')).toContainText(/Right Bird/i);
-  await expect(page.locator('satyrn-moon')).toContainText(/Rigged Right/i);
+  await expect(page.locator('satyrn-moon')).toContainText(/The Wanderer/i);
 });

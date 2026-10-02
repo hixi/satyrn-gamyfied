@@ -55,11 +55,12 @@ describe('well and pipe', () => {
     expect(el.wellCapacity).toBeGreaterThan(0);
   });
 
-  it('completes via the accessible continue control', async () => {
+  it('skips via the accessible continue control without granting the lesson', async () => {
     const { el, events } = mountMechanic('mechanic-well', 'mechanic.well-and-pipe', 'world.well-and-pipe', authored);
     await el.updateComplete;
     el.renderRoot.querySelector('[data-fallback]').click();
     await el.updateComplete;
-    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
+    expect(events.some((e) => e.type === 'world.skipped')).toBe(true);
+    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
   });
 });

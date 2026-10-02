@@ -73,9 +73,10 @@ a shared pipe, and plant a Bead of your own in the commons.
 - **Keyboard-first.** Every mechanic is completable with the keyboard alone and
   declares a screen-reader description; any motion honours
   `prefers-reduced-motion`.
-- **Achievements distinguish the three honest outcomes:** finishing a world's
-  lesson, skipping it (recorded and acknowledged, never a cheat), and completing
-  the journey by planting a Bead in the commons.
+- **Achievements distinguish the three honest outcomes:** solving a world's
+  lesson, skipping it with *Continue without playing* (recorded and
+  acknowledged — and it does **not** grant the lesson), and completing the
+  journey by planting a Bead in the commons.
 - **Your progress is yours.** Versioned save state with migrations, plus
   export, import, and reset in the journal.
 - **No accounts, no tracking, no ambient network.**

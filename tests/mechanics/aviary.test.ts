@@ -35,12 +35,13 @@ describe('aviary', () => {
     expect(el.tasks.length).toBeGreaterThan(0);
   });
 
-  it('completes via the accessible continue control', async () => {
+  it('skips via the accessible continue control without granting the lesson', async () => {
     const { el, events } = mountMechanic('mechanic-aviary', 'mechanic.aviary', 'world.aviary-of-whispers', authored);
     await el.updateComplete;
     el.renderRoot.querySelector('[data-fallback]').click();
     await el.updateComplete;
-    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
+    expect(events.some((e) => e.type === 'world.skipped')).toBe(true);
+    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
   });
 
   it('solve replaces assignments rather than mutating them in place', async () => {

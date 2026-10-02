@@ -31,12 +31,13 @@ describe('rain gauge', () => {
     expect(el.capacity).toBeGreaterThan(0);
   });
 
-  it('completes via the accessible continue control', async () => {
+  it('skips via the accessible continue control without granting the lesson', async () => {
     const { el, events } = mountMechanic('mechanic-rain-gauge', 'mechanic.rain-gauge', 'world.rain-gauge-terrace', authored);
     await el.updateComplete;
     el.renderRoot.querySelector('[data-fallback]').click();
     await el.updateComplete;
-    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
+    expect(events.some((e) => e.type === 'world.skipped')).toBe(true);
     expect(events.some((e) => e.type === 'evidence.submitted' && (e.evidence as any).usedFallback === true)).toBe(true);
+    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
   });
 });

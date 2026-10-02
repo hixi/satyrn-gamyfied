@@ -32,6 +32,15 @@ describe('the accessible fallback path', () => {
     expect(store.getState().achievements).toContain('achievement.wanderer');
   });
 
+  it('does not grant the lesson to a skip', async () => {
+    const { el, store } = mountWithStore('mechanic-lantern', 'mechanic.lantern', 'world.lantern-room');
+    await el.updateComplete;
+    el.renderRoot.querySelector('[data-fallback]').click();
+    await el.updateComplete;
+    expect(store.getState().completedMechanics).not.toContain('mechanic.lantern');
+    expect(store.getState().achievements).not.toContain('achievement.first-light');
+  });
+
   it('acknowledges a skip in every world, not only the prologue', async () => {
     const { el, store } = mountWithStore('mechanic-aviary', 'mechanic.aviary', 'world.aviary-of-whispers');
     await el.updateComplete;

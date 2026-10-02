@@ -7,10 +7,12 @@ test('walks the Thread through the prologue', async ({ page }) => {
   await page.locator('satyrn-map a', { hasText: /Lantern Room/i }).click();
   await expect(page.locator('satyrn-world')).toBeVisible();
 
+  // Continue without playing is an honest skip: it is recorded and
+  // acknowledged, and it does not grant the lesson.
   await page.locator('satyrn-world mechanic-lantern [data-fallback]').click();
 
   await page.locator('satyrn-app a[href="#/journal"]').click();
-  await expect(page.locator('satyrn-app main satyrn-moon')).toContainText(/First Light/i);
-  // Continuing without playing is an honest skip, acknowledged distinctly.
-  await expect(page.locator('satyrn-app main satyrn-moon')).toContainText(/The Wanderer/i);
+  const moon = page.locator('satyrn-app main satyrn-moon');
+  await expect(moon).toContainText(/The Wanderer/i);
+  await expect(moon).not.toContainText(/First Light/i);
 });

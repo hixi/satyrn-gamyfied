@@ -50,14 +50,15 @@ describe('lantern mechanic', () => {
     expect(events.some((e) => e.type === 'evidence.submitted' && (e.evidence as any).usedFallback === false)).toBe(true);
   });
 
-  it('completes via the accessible continue control', async () => {
+  it('skips via the accessible continue control without granting the lesson', async () => {
     const { el, events } = mount();
     await el.updateComplete;
     const button = el.shadowRoot.querySelector('[data-fallback]');
     button.click();
     await el.updateComplete;
-    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
+    expect(events.some((e) => e.type === 'world.skipped')).toBe(true);
     expect(events.some((e) => e.type === 'evidence.submitted' && (e.evidence as any).usedFallback === true)).toBe(true);
+    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
   });
 
   it('marks the element when the player asked for reduced motion', async () => {

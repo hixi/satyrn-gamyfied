@@ -54,11 +54,12 @@ describe('gate of orders', () => {
     expect(el.shadowRoot.textContent).not.toContain('every case is handled');
   });
 
-  it('completes via the accessible continue control', async () => {
+  it('skips via the accessible continue control without granting the lesson', async () => {
     const { el, events } = mountMechanic('mechanic-gate', 'mechanic.gate-of-orders', 'world.gate-of-orders', authored);
     await el.updateComplete;
     el.renderRoot.querySelector('[data-fallback]').click();
     await el.updateComplete;
-    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(true);
+    expect(events.some((e) => e.type === 'world.skipped')).toBe(true);
+    expect(events.some((e) => e.type === 'mechanic.completed')).toBe(false);
   });
 });
