@@ -31,7 +31,7 @@ export class SatyrnWorld extends LitElement {
   declare worldId: string;
   declare store?: Store;
 
-  private announced = false;
+  private lastEnteredWorld?: string;
   private mountedMechanic?: MechanicElement;
 
   constructor() {
@@ -39,12 +39,9 @@ export class SatyrnWorld extends LitElement {
     this.worldId = '';
   }
 
-  connectedCallback(): void {
-    super.connectedCallback();
-    if (!this.announced && this.worldId && this.store) {
-      this.announced = true;
-      this.store.dispatch({ type: 'world.entered', world: this.worldId });
-    }
+  protected willUpdate(changed: Map<PropertyKey, unknown>): void {
+    // A new world re-mounts its mechanic; the old one must not linger.
+    if (changed.has('worldId')) this.mountedMechanic = undefined;
   }
 
   private placeholder(world: World) {
@@ -91,10 +88,14 @@ export class SatyrnWorld extends LitElement {
   }
 
   protected updated(): void {
-    if (this.mountedMechanic) return;
     const content = getContent();
     const world = content.worlds[this.worldId];
     if (!world) return;
+    if (this.lastEnteredWorld !== this.worldId) {
+      this.lastEnteredWorld = this.worldId;
+      this.store?.dispatch({ type: 'world.entered', world: this.worldId });
+    }
+    if (this.mountedMechanic) return;
     const mechanic = content.mechanics[world.mechanic];
     const tag = mechanic?.element;
     if (!tag || !customElements.get(tag)) return;
@@ -102,7 +103,7 @@ export class SatyrnWorld extends LitElement {
     if (!holder) return;
     const element = document.createElement(tag) as MechanicElement;
     element.setContext(this.buildContext(world, mechanic));
-    holder.append(element);
+    holder.replaceChildren(element);
     this.mountedMechanic = element;
   }
 

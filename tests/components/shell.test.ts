@@ -65,4 +65,18 @@ describe('shell', () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(app.store.getState().visitedWorlds).toContain('world.lantern-room');
   });
+
+  it('swaps the mounted mechanic when the world changes', async () => {
+    const w: any = document.createElement('satyrn-world');
+    w.store = store;
+    w.worldId = 'world.rain-gauge-terrace';
+    document.body.append(w);
+    await w.updateComplete;
+    expect(w.renderRoot.querySelector('mechanic-rain-gauge')).toBeTruthy();
+
+    w.worldId = 'world.aviary-of-whispers';
+    await w.updateComplete;
+    expect(w.renderRoot.querySelector('mechanic-aviary')).toBeTruthy();
+    expect(w.renderRoot.querySelector('mechanic-rain-gauge')).toBeFalsy();
+  });
 });
