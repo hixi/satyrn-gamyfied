@@ -6,6 +6,7 @@ import { announce } from './game/announce';
 import { BootScene } from './game/scenes/boot';
 import { SCENE_KEYS } from './game/scene-keys';
 import { NotFoundScene, WorldPlaceholderScene } from './game/scenes/world-placeholder';
+import { HudScene } from './game/overlays/hud';
 import { installE2eHook } from './game/e2e-hook';
 import { normalizeRoute, routeToSceneKey } from './game/router-bridge';
 import { parseHash } from './router';
@@ -38,6 +39,7 @@ const config: Phaser.Types.Core.GameConfig = {
     stub(SCENE_KEYS.map, 'The Thread.'),
     WorldPlaceholderScene,
     NotFoundScene,
+    HudScene,
     stub(SCENE_KEYS.journal, 'The Moon remembers.'),
   ],
 };
@@ -50,7 +52,10 @@ function routeFromHash(): void {
   game.scene.stop(SCENE_KEYS.map);
   game.scene.stop(SCENE_KEYS.world);
   game.scene.stop(SCENE_KEYS.notFound);
+  game.scene.stop(SCENE_KEYS.journal);
   game.scene.start(key, data);
+  // The HUD overlays every route and must survive route changes.
+  if (!game.scene.isActive(SCENE_KEYS.hud)) game.scene.run(SCENE_KEYS.hud);
 }
 
 const game = new Phaser.Game(config);
@@ -64,4 +69,11 @@ installE2eHook(game);
 if (typeof window !== 'undefined') {
   window.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
   window.addEventListener('hashchange', routeFromHash);
+  // Deep links (e.g. `#/world/x` on a cold load) must route past the boot
+  // default: Boot leaves the first frame empty; the URL picks the scene.
+  if (window.location.hash && window.location.hash !== '#/') {
+    game.events.once(Phaser.Core.Events.READY, () => {
+      routeFromHash();
+    });
+  }
 }

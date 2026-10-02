@@ -22,19 +22,41 @@ function color(hex: string): number {
   return Phaser.Display.Color.HexStringToColor(hex).color;
 }
 
-/** Per-scene focus registry, created on demand and stored on the scene. */
+/**
+ * Per-scene focus registry, created on demand and stored on the scene.
+ * Tab order lives on the canvas: the browser keeps DOM focus on `body` while
+ * the scene tracks which widget is current and draws its ring.
+ *
+ * Only the HUD wires Tab/Enter/Space: every scene's keyboard plugin hears
+ * every key, so per-scene handlers would each advance their own registry and
+ * all but the last would lose. The HUD bar is on every route, so one global
+ * Tab order over its buttons is the correct scope for Wave 0.
+ */
 export function useFocus(scene: Phaser.Scene): FocusRegistry {
   const existing = (scene as unknown as Record<string, unknown>)[FOCUS_KEY] as FocusRegistry | undefined;
   if (existing) return existing;
   const registry = createFocusRegistry();
   (scene as unknown as Record<string, unknown>)[FOCUS_KEY] = registry;
-  scene.input.keyboard?.on('keydown-TAB', (event: KeyboardEvent) => {
-    event.preventDefault();
-    const id = registry.move(event.shiftKey ? -1 : 1);
-    if (id) highlightFocused(scene, id);
-  });
-  scene.input.keyboard?.on('keydown-ENTER', () => activateFocused(scene));
-  scene.input.keyboard?.on('keydown-SPACE', () => activateFocused(scene));
+  if (scene.scene.key === 'hud') {
+    const keyboard = scene.input.keyboard;
+    const onTab = (event: KeyboardEvent) => {
+      event.preventDefault();
+      const id = registry.move(event.shiftKey ? -1 : 1);
+      if (id) highlightFocused(scene, id);
+    };
+    const onEnter = (event: KeyboardEvent) => {
+      event.preventDefault();
+      activateFocused(scene);
+    };
+    keyboard?.on('keydown-TAB', onTab);
+    keyboard?.on('keydown-ENTER', onEnter);
+    keyboard?.on('keydown-SPACE', onEnter);
+    keyboard?.addCapture('TAB,ENTER,SPACE');
+    // Phaser queues a fresh keydown event per scene per keypress; a stale
+    // closure can outlive a scene restart, so always resolve fresh state.
+    void onTab;
+    void onEnter;
+  }
   return registry;
 }
 
@@ -56,6 +78,18 @@ function widgetsOf(scene: Phaser.Scene): SceneWidgets {
 function highlightFocused(scene: Phaser.Scene, id: string): void {
   const { rings } = widgetsOf(scene);
   for (const [ringId, ring] of rings) ring.setVisible(ringId === id);
+}
+
+/** Forget the focus wiring after the keyboard plugin is torn down (scene stop). */
+export function resetFocusWiring(scene: Phaser.Scene): void {
+  delete (scene as unknown as Record<string, unknown>)[FOCUS_KEY];
+}
+
+/** Drop every tracked widget: call before a scene re-renders its buttons. */
+export function clearSceneWidgets(scene: Phaser.Scene): void {
+  const stored = (scene as unknown as Record<string, unknown>)[RING_KEY] as SceneWidgets | undefined;
+  stored?.rings.clear();
+  stored?.taps.clear();
 }
 
 function activateFocused(scene: Phaser.Scene): void {

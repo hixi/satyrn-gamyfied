@@ -52,8 +52,13 @@ export class BootScene extends Phaser.Scene {
   create(): void {
     generateTextures(this);
     this.applySettings();
+    const hash = typeof window !== 'undefined' ? window.location.hash : '';
+    // A deep link wins over the boot default; Boot owns the first frame only.
     const seen = this.registry.get('seenPrologue') === true;
-    this.scene.start(seen ? SCENE_KEYS.map : SCENE_KEYS.title);
+    const first = hash && hash !== '#/' ? null : seen ? SCENE_KEYS.map : SCENE_KEYS.title;
+    // The HUD stays alive across every route, so its toggle works in-world.
+    this.scene.run(SCENE_KEYS.hud);
+    if (first) this.scene.start(first);
   }
 
   private applySettings(): void {
