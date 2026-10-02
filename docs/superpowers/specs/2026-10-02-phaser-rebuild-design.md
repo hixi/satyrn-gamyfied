@@ -1,7 +1,7 @@
 # Satyrn — The Thread: full-Phaser rebuild (design spec)
 
 **Date:** 2026-10-02
-**Status:** draft — awaiting user review before implementation planning
+**Status:** accepted — implementation planning follows
 **Supersedes:** `2026-10-02-satyrn-book-as-game-design.md` (the Lit/DOM hybrid),
 which remains in this folder as history but is no longer the build target.
 **Decisions locked in brainstorming:** Approach A (Phaser owns everything),
@@ -180,17 +180,19 @@ tests/               logic unit tests, focus-model tests, content tests, Playwri
 ## Prologue and story embedding
 
 - **TitleScene flow** (new players; replay skips to the map with one button):
-  1. Premise: "You are the Wayfarer, walking a thread between ten small
-     handmade worlds…"
-  2. Cast cards: the **Satyrn** (quick, curious, distractible — the little
-     local model you are learning to keep on track), the **Moon** (your
-     memory; asks "how would we know that's true?"), the **Wayfarer**
-     ("that's you — the one at the wheel"). Portraits drawn in code, one
-     flat style.
-  3. The ten keepers as a cast list, each tied to their world.
-  4. How-to-play (one card: move/tap, Tab+Enter works everywhere, Esc goes
-     back, sound is off until you ask).
-  5. One button: *Step onto the Thread*.
+  condensed to **3 screens**, with a persistent Skip button and no gates — the
+  player can reach *Step onto the Thread* from any screen without doing
+  anything else:
+  1. Premise + you: "You are the Wayfarer, walking a thread between ten small
+     handmade worlds…" — that's you, the one at the wheel.
+  2. Companions + keepers: cast cards for the **Satyrn** (quick, curious,
+     distractible — the little local model you are learning to keep on track)
+     and the **Moon** (your memory; asks "how would we know that's true?"),
+     plus the ten keepers as a cast list, each tied to their world. Portraits
+     drawn in code, one flat style.
+  3. How-to-play + depart (one card: move/tap, Tab+Enter works everywhere, Esc
+     goes back, sound is off until you ask) with the *Step onto the Thread*
+     button. The same Skip affordance from screens 1–2 lands here / on the map.
 - **Act title-cards** narrated by the Moon when entering the first bead of an
   act in Thread mode (skippable; recorded in `seenActCards` so they show once).
 - **Keepers stay on stage** during their worlds with idle animation and
