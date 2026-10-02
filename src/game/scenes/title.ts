@@ -5,7 +5,7 @@ import { content } from '../../generated/content';
 import type { Store } from '../../store/store';
 import { SCENE_KEYS } from '../scene-keys';
 import { navigate } from '../router-bridge';
-import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus } from '../ui/widgets';
+import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus, hudHeight } from '../ui/widgets';
 
 function storeOf(scene: Phaser.Scene): Store {
   return scene.registry.get('store') as Store;
@@ -55,7 +55,7 @@ export class TitleScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const spec = SCREENS[this.screen];
     const cx = width / 2;
-    const top = THEME.HUD_HEIGHT + 24;
+    const top = hudHeight(this) + 24;
 
     this.add
       .text(cx, top + 20, spec.heading, {

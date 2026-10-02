@@ -3,6 +3,12 @@ import { THEME } from '../theme';
 import type { LayoutMode } from '../layout';
 import { buttonSize } from './sizes';
 import { createFocusRegistry, type FocusRegistry } from './focus';
+
+/** Bar height the HUD actually uses: compact phones grow a second row. */
+export function hudHeight(scene: Phaser.Scene): number {
+  const compact = scene.scale.width < THEME.COMPACT_MAX_WIDTH;
+  return compact ? THEME.HUD_HEIGHT_COMPACT : THEME.HUD_HEIGHT;
+}
 import type { SoundBank } from '../audio';
 
 export type { ButtonSize } from './sizes';

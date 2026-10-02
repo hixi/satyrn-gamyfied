@@ -5,8 +5,8 @@ import { content } from '../../generated/content';
 import type { Store } from '../../store/store';
 import { ImportError } from '../../store/persistence';
 import { SCENE_KEYS } from '../scene-keys';
-import { getReturnTo, navigate, setReturnTo } from '../router-bridge';
-import { makeButton, makeTabs, clearSceneWidgets, resetFocusWiring, useFocus } from '../ui/widgets';
+import { getReturnTo, navigate } from '../router-bridge';
+import { makeButton, makeTabs, clearSceneWidgets, resetFocusWiring, useFocus, hudHeight } from '../ui/widgets';
 import { toast } from './toasts';
 
 function storeOf(scene: Phaser.Scene): Store {
@@ -30,8 +30,6 @@ export class JournalScene extends Phaser.Scene {
 
   create(): void {
     this.tab = 'Journey';
-    // Journal Back needs the world left behind: record it on open.
-    setReturnTo(window.location.hash || '#/');
     this.render();
     this.scale.on('resize', this.render, this);
     this.unsubscribe = storeOf(this).subscribe(() => this.render());
@@ -52,7 +50,7 @@ export class JournalScene extends Phaser.Scene {
     const state = store.getState();
     const { width, height } = this.scale;
     const cx = width / 2;
-    const top = THEME.HUD_HEIGHT + 16;
+    const top = hudHeight(this) + 16;
 
     this.add
       .text(cx, top + 16, "The Moon's Memory", {

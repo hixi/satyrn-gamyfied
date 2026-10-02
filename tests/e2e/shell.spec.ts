@@ -5,9 +5,12 @@ test('HUD toggles the mode from inside a world and shows the star count', async 
   const canvas = page.locator('#game canvas');
   await expect(canvas).toBeVisible();
   // The world scene owns Tab while a world is open; the HUD toggle is
-  // reached by pointer. Click Wander (second HUD button from the left).
+  // reached by pointer. Wander sits second from the left; on compact
+  // phones the buttons shrink but keep their left-edge positions.
   await page.waitForTimeout(1000);
-  await canvas.click({ position: { x: 270, y: 32 } });
+  const hudBox = await canvas.boundingBox();
+  const narrow = (hudBox?.width ?? 1280) < 700;
+  await canvas.click({ position: { x: narrow ? 244 : 270, y: 32 } });
   await expect(page).toHaveURL(/#\/$/);
   await expect(page.locator('#satyrn-live')).toContainText(/Wander/);
   await expect(page.locator('#satyrn-live')).toContainText(/0 of 27 stars/);
@@ -18,15 +21,21 @@ test('prologue walks three screens then lands on the map', async ({ page }) => {
   await page.waitForTimeout(1000);
   await expect(page.locator('#satyrn-live')).toContainText(/Wayfarer/);
   // Next is the first Tab stop on screens 1-2: Enter walks forward twice.
+  // Each advance re-renders Title; wait for the new screen's live text
+  // before Tabbing again, or the Tab can land on the outgoing buttons.
   await page.keyboard.press('Tab');
   await page.waitForTimeout(300);
   await page.keyboard.press('Enter');
   await expect(page.locator('#satyrn-live')).toContainText(/companions/);
+  await page.waitForTimeout(500);
   await page.keyboard.press('Tab');
   await page.waitForTimeout(300);
   await page.keyboard.press('Enter');
   await expect(page.locator('#satyrn-live')).toContainText(/how to play/i);
-  // Screen 3 has only Step onto the Thread: Enter lands on the map.
+  await page.waitForTimeout(500);
+  // Screen 3 has only Step onto the Thread: Tab to it, Enter lands on map.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(300);
   await page.keyboard.press('Enter');
   await page.waitForTimeout(500);
   await expect(page).toHaveURL(/#\/$/);
@@ -90,11 +99,12 @@ test('journal opens from the map and Back returns', async ({ page }) => {
   await page.keyboard.press('Enter');
   await page.waitForTimeout(500);
   await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
-  // HUD Journal button sits at width-170: click it by pointer.
+  // HUD Journal button: right side on desktop, second row on compact.
   const canvas = page.locator('#game canvas');
   const box = await canvas.boundingBox();
-  const journalX = (box?.width ?? 1280) - 170;
-  await canvas.click({ position: { x: journalX, y: 32 } });
+  const narrow = (box?.width ?? 1280) < 700;
+  const journalPos = narrow ? { x: 82, y: 88 } : { x: (box?.width ?? 1280) - 170, y: 32 };
+  await canvas.click({ position: journalPos });
   await expect(page).toHaveURL(/#\/journal/);
   await expect(page.locator('#satyrn-live')).toContainText(/Journey|Cards|Honors|Keepsake/);
   // Journal starts before its first stop: five Tabs reach Back.
@@ -127,4 +137,38 @@ test('boots to the title and exposes the gated e2e hook', async ({ page }) => {
 test('the e2e hook does not exist without the flag', async ({ page }) => {
   await page.goto('#/');
   expect(await page.evaluate(() => (window as unknown as { __satyrn?: unknown }).__satyrn)).toBeUndefined();
+});
+
+test('portrait phone: compact map fits without scrolling, targets fit fingers', async ({ page }) => {
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  // Skip the prologue: Tab twice from Next, Enter on Skip.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
+  // The canvas fills the viewport width: no horizontal page scrolling.
+  const viewportWidth = page.viewportSize()?.width ?? 390;
+  const canvasWidth = await page.evaluate(() => document.querySelector('#game canvas')?.clientWidth ?? 0);
+  expect(canvasWidth).toBeLessThanOrEqual(viewportWidth + 1);
+  expect(await page.evaluate(() => document.body.scrollWidth <= document.documentElement.clientWidth + 1)).toBe(true);
+  // Title Skip is reachable by tap on touch devices and click elsewhere:
+  // go back and activate it with the available input.
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  const canvas = page.locator('#game canvas');
+  const box = await canvas.boundingBox();
+  expect(box).not.toBeNull();
+  const skipPos = { x: (box?.width ?? 390) / 2 + 110, y: (box?.height ?? 844) - 120 };
+  const hasTouch = await page.evaluate(() => 'ontouchstart' in window || navigator.maxTouchPoints > 0);
+  if (hasTouch) {
+    await canvas.tap({ position: skipPos });
+  } else {
+    await canvas.click({ position: skipPos });
+  }
+  await page.waitForTimeout(500);
+  await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
 });

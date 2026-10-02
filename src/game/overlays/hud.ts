@@ -63,6 +63,8 @@ export class HudScene extends Phaser.Scene {
     clearSceneWidgets(this);
     this.bar = this.add.container(0, 0).setDepth(100).setScrollFactor(0);
     const width = this.scale.width;
+    // Compact grows the bar; scenes read the same height via hudHeight().
+    this.registry.set('hudHeight', width < THEME.COMPACT_MAX_WIDTH ? THEME.HUD_HEIGHT_COMPACT : THEME.HUD_HEIGHT);
     const store = storeOf(this);
     const state = store.getState();
     const sounds = soundsOf(this);
@@ -84,48 +86,67 @@ export class HudScene extends Phaser.Scene {
       this.time.delayedCall(250, () => announceMode(mode));
     };
 
+    // Compact phones (390px) fit Thread/Wander + stars + sound: journal
+    // moves to a second row instead of squeezing off-screen.
+    const compact = width < THEME.COMPACT_MAX_WIDTH;
     const thread = makeButton(this, {
       id: 'hud-thread',
       text: state.mode === 'thread' ? '● Thread' : 'Thread',
+      mode: compact ? 'compact' : 'expansive',
       onTap: () => goMode('thread'),
     });
-    thread.setPosition(90, y);
+    thread.setPosition(compact ? 82 : 90, y);
     const wander = makeButton(this, {
       id: 'hud-wander',
       text: state.mode === 'wander' ? '● Wander' : 'Wander',
+      mode: compact ? 'compact' : 'expansive',
       onTap: () => goMode('wander'),
     });
-    wander.setPosition(270, y);
+    wander.setPosition(compact ? 244 : 270, y);
     this.bar.add([thread, wander]);
 
-    const stars = this.add
-      .text(width - 360, y, `★ ${starTotal(store)}`, {
-        fontFamily: THEME.fonts.body,
-        fontSize: '16px',
-        color: THEME.palette.ink,
-      })
-      .setOrigin(0.5);
-    const beads = this.add
-      .text(width - 280, y, `${state.visitedWorlds.length} beads`, {
-        fontFamily: THEME.fonts.body,
-        fontSize: '16px',
-        color: THEME.palette.ink,
-      })
-      .setOrigin(0.5);
-    this.bar.add([stars, beads]);
+    if (!compact) {
+      const stars = this.add
+        .text(width - 360, y, `★ ${starTotal(store)}`, {
+          fontFamily: THEME.fonts.body,
+          fontSize: '16px',
+          color: THEME.palette.ink,
+        })
+        .setOrigin(0.5);
+      const beads = this.add
+        .text(width - 280, y, `${state.visitedWorlds.length} beads`, {
+          fontFamily: THEME.fonts.body,
+          fontSize: '16px',
+          color: THEME.palette.ink,
+        })
+        .setOrigin(0.5);
+      this.bar.add([stars, beads]);
+    } else {
+      const stars = this.add
+        .text(width - 60, y, `★ ${starTotal(store)}`, {
+          fontFamily: THEME.fonts.body,
+          fontSize: '16px',
+          color: THEME.palette.ink,
+        })
+        .setOrigin(0.5);
+      this.bar.add([stars]);
+    }
 
     const journal = makeButton(this, {
       id: 'hud-journal',
       text: 'Journal',
+      mode: compact ? 'compact' : 'expansive',
       onTap: () => {
         setReturnTo(window.location.hash || '#/');
         navigate('#/journal');
       },
     });
-    journal.setPosition(width - 170, y);
+    // Compact: journal drops to a second row so Thread/Wander stay tappable.
+    journal.setPosition(compact ? 82 : width - 170, compact ? y + 56 : y);
     const sound = makeButton(this, {
       id: 'hud-sound',
       text: `Sound: ${state.settings.soundOn ? 'on' : 'off'}`,
+      mode: compact ? 'compact' : 'expansive',
       onTap: () => {
         const on = !store.getState().settings.soundOn;
         store.dispatch({ type: 'settings.changed', settings: { soundOn: on } });
@@ -134,7 +155,7 @@ export class HudScene extends Phaser.Scene {
         announce(`Sound ${on ? 'on' : 'off'}.`);
       },
     });
-    sound.setPosition(width - 60, y);
+    sound.setPosition(compact ? 244 : width - 60, compact ? y + 56 : y);
     this.bar.add([journal, sound]);
     void getReturnTo;
   }

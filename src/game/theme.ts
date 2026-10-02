@@ -22,8 +22,9 @@ export const THEME = {
   MIN_TOUCH: 48,
   /** Viewport widths at or below this use the compact layout. */
   COMPACT_MAX_WIDTH: 700,
-  /** HUD bar height in CSS px, before safe-area insets. */
+  /** HUD bar height in CSS px, before safe-area insets. Compact adds a row. */
   HUD_HEIGHT: 64,
+  HUD_HEIGHT_COMPACT: 120,
 } as const;
 
 export type Theme = typeof THEME;

@@ -7,7 +7,7 @@ import { SCENE_KEYS } from '../scene-keys';
 import { navigate } from '../router-bridge';
 import { nextUnvisited, threadSequence } from '../../thread';
 import { getLayoutMode } from '../layout';
-import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus } from '../ui/widgets';
+import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus, hudHeight } from '../ui/widgets';
 
 function storeOf(scene: Phaser.Scene): Store {
   return scene.registry.get('store') as Store;
@@ -66,7 +66,7 @@ export class MapScene extends Phaser.Scene {
     const mode = state.mode;
     const sequence = threadSequence(content);
     const { width, height } = this.scale;
-    const top = THEME.HUD_HEIGHT + 16;
+    const top = hudHeight(this) + 16;
     const cx = width / 2;
 
     const heading = mode === 'thread' ? 'The Thread' : 'All the Beads';
@@ -102,7 +102,7 @@ export class MapScene extends Phaser.Scene {
   private renderThread(sequence: string[], visited: string[], compact: boolean): void {
     const { width, height } = this.scale;
     const cx = width / 2;
-    const top = THEME.HUD_HEIGHT + 80;
+    const top = hudHeight(this) + 80;
     const stepY = compact ? 64 : 56;
     const next = nextUnvisited(sequence, visited);
     // Continue comes first: it is the primary action and the first Tab stop.
@@ -146,7 +146,7 @@ export class MapScene extends Phaser.Scene {
   private renderWander(sequence: string[], compact: boolean): void {
     const { width, height } = this.scale;
     const cx = width / 2;
-    let y = THEME.HUD_HEIGHT + 80;
+    let y = hudHeight(this) + 80;
     const acts = ['prologue', 'act1', 'act2', 'act3'];
     for (const act of acts) {
       const group = sequence.filter((id) => content.worlds[id]?.act === act);
