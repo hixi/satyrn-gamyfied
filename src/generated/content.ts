@@ -101,6 +101,15 @@ export const content: Content = {
         "concept.loop-breaker"
       ]
     },
+    "concept.spec": {
+      "id": "concept.spec",
+      "term": "Spec",
+      "short": "A description precise enough for someone else to build and check.",
+      "body": "A spec says what is to be built in terms another person can act on and verify. \"Sturdy enough\" cannot be built, because no two builders would agree on what it means. \"Twenty bricks high\" can be built, and then measured.",
+      "related": [
+        "concept.verification"
+      ]
+    },
     "concept.taxonomy": {
       "id": "concept.taxonomy",
       "term": "Taxonomy",
@@ -113,6 +122,13 @@ export const content: Content = {
       "term": "Token",
       "short": "The unit of text a model reads and writes.",
       "body": "A model does not read letters or words the way you do. It reads tokens: small chunks of text. Everything you show it is measured in tokens, and every token you spend is a token the model must hold in view at once.",
+      "related": []
+    },
+    "concept.verification": {
+      "id": "concept.verification",
+      "term": "Verification",
+      "short": "How you know the build matches the drawing.",
+      "body": "Verification is the check that turns a claim into evidence. It needs a case that can pass and a case that can fail; without both, it is not a check at all. Build from the spec, then measure the result against it.",
       "related": []
     }
   },
@@ -135,11 +151,23 @@ export const content: Content = {
       "title": "keeper of the yard",
       "description": "She builds the cart, but she cares more about the rig around the horse: the loop that keeps it moving, the limit that stops it, and the check that tells it when it has arrived."
     },
+    "character.draughtswoman": {
+      "id": "character.draughtswoman",
+      "name": "the Draughtswoman",
+      "title": "keeper of the blueprint",
+      "description": "She draws what is to be built. A drawing with no measurements in it, she says, is not a plan — it is a wish, and you cannot build a wish."
+    },
     "character.gatekeeper": {
       "id": "character.gatekeeper",
       "name": "the Gatekeeper",
       "title": "keeper of the orders",
       "description": "She does not decide who enters. She holds the standing orders, and she follows them exactly as written — which is why the writing matters."
+    },
+    "character.mason": {
+      "id": "character.mason",
+      "name": "the Mason",
+      "title": "keeper of the build",
+      "description": "She builds only from numbers she can check. Hand her a wish and she waits; hand her a measurement and she lays the stone and then proves it fits."
     },
     "character.miller": {
       "id": "character.miller",
@@ -194,6 +222,20 @@ export const content: Content = {
       "mechanic": "mechanic.aviary",
       "summary": "Three errands, three birds, and a rule that each bird carries one.",
       "intro": "The Birdwright opens the aviary. \"Every bird is good at something,\" she says, \"and none is good at everything. Match them.\""
+    },
+    "world.blueprint-and-mason": {
+      "id": "world.blueprint-and-mason",
+      "title": "The Blueprint and the Mason",
+      "act": "act3",
+      "order": 7,
+      "keeper": "character.draughtswoman",
+      "concepts": [
+        "concept.spec",
+        "concept.verification"
+      ],
+      "mechanic": "mechanic.blueprint",
+      "summary": "A drawing, a mason, and the difference between a wish and a spec.",
+      "intro": "The Draughtswoman unrolls a drawing: a wall sixty bricks wide and twenty high. \"The Mason will build it,\" she says, \"but only from a spec she can measure. Give her a wish and she will stand there all day.\""
     },
     "world.cartwrights-yard": {
       "id": "world.cartwrights-yard",
@@ -372,6 +414,55 @@ export const content: Content = {
               "vast",
               "careful"
             ]
+          }
+        ]
+      }
+    },
+    "mechanic.blueprint": {
+      "id": "mechanic.blueprint",
+      "element": "mechanic-blueprint",
+      "title": "The Blueprint and the Mason",
+      "description": "Choose the clauses that make a spec the Mason can build and check. A vague clause leaves her waiting; the measurements must match the drawing.",
+      "a11y": "Choose clauses to form a spec, then ask the Mason to build. Only measurable clauses can be built and checked. You can also continue without playing.",
+      "params": {
+        "blueprint": {
+          "width": 60,
+          "height": 20
+        },
+        "clauses": [
+          {
+            "id": "w60",
+            "text": "60 bricks wide",
+            "kind": "width",
+            "value": 60
+          },
+          {
+            "id": "w40",
+            "text": "40 bricks wide",
+            "kind": "width",
+            "value": 40
+          },
+          {
+            "id": "h20",
+            "text": "20 bricks high",
+            "kind": "height",
+            "value": 20
+          },
+          {
+            "id": "h30",
+            "text": "30 bricks high",
+            "kind": "height",
+            "value": 30
+          },
+          {
+            "id": "sturdy",
+            "text": "sturdy enough",
+            "kind": "vague"
+          },
+          {
+            "id": "about-right",
+            "text": "looks about right",
+            "kind": "vague"
           }
         ]
       }
@@ -663,6 +754,16 @@ export const content: Content = {
         "mechanic": "mechanic.lantern"
       }
     },
+    "achievement.measurable": {
+      "id": "achievement.measurable",
+      "title": "Measurable",
+      "description": "Wrote a spec the Mason could build and check.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.blueprint"
+      }
+    },
     "achievement.rigged-right": {
       "id": "achievement.rigged-right",
       "title": "Rigged Right",
@@ -783,6 +884,30 @@ export const content: Content = {
           "id": "answer",
           "speaker": "character.cartwright",
           "text": "Everything includes the pretty bell. It rings, and does nothing else. The rig is not more parts; it is the right parts.",
+          "choices": []
+        }
+      }
+    },
+    "dialogue.draughtswoman.intro": {
+      "id": "dialogue.draughtswoman.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.draughtswoman",
+          "text": "Writing \"make it good\" is not a plan. The Mason cannot measure good. What can she measure?",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "What if I am not sure of the number yet?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.draughtswoman",
+          "text": "Then you are not ready to build. A spec you cannot check is a promise you cannot keep.",
           "choices": []
         }
       }
@@ -911,7 +1036,8 @@ export const content: Content = {
         "world.cartwrights-yard",
         "world.round-path",
         "world.gate-of-orders",
-        "world.assayers-scale"
+        "world.assayers-scale",
+        "world.blueprint-and-mason"
       ]
     }
   },

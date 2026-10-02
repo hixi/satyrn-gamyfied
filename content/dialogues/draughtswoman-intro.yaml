@@ -1,0 +1,20 @@
+id: dialogue.draughtswoman.intro
+start: start
+nodes:
+  start:
+    id: start
+    speaker: character.draughtswoman
+    text: >-
+      Writing "make it good" is not a plan. The Mason cannot measure good. What
+      can she measure?
+    choices:
+      - id: ask
+        text: What if I am not sure of the number yet?
+        next: answer
+  answer:
+    id: answer
+    speaker: character.draughtswoman
+    text: >-
+      Then you are not ready to build. A spec you cannot check is a promise you
+      cannot keep.
+    choices: []
