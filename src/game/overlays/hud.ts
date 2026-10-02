@@ -37,12 +37,16 @@ export class HudScene extends Phaser.Scene {
 
   create(): void {
     // The keyboard plugin is torn down on every scene stop/start; re-wire.
-    resetFocusWiring(this);
-    useFocus(this);
+    // render() also resets + rewires (store updates re-render in place).
     this.render();
     this.scale.on('resize', this.render, this);
     const store = storeOf(this);
-    this.unsubscribe = store.subscribe(() => this.render());
+    // Skip re-render when the store event cannot change the HUD: re-render
+    // rebuilds every button and would steal a Tab press landing mid-frame.
+    this.unsubscribe = store.subscribe((_state, event) => {
+      if (event?.type === 'world.entered') return;
+      this.render();
+    });
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.unsubscribe?.();
       this.unsubscribe = null;
@@ -51,10 +55,12 @@ export class HudScene extends Phaser.Scene {
   }
 
   private render(): void {
-    // Render tears down every button, so the shared widget maps must not
-    // keep rings/taps for destroyed buttons across re-renders.
-    clearSceneWidgets(this);
+    // Destroy old buttons first (handlers run against the old registry),
+    // then reset + rebuild (same discipline as Title/Map).
     this.bar?.destroy(true);
+    resetFocusWiring(this);
+    useFocus(this);
+    clearSceneWidgets(this);
     this.bar = this.add.container(0, 0).setDepth(100).setScrollFactor(0);
     const width = this.scale.width;
     const store = storeOf(this);
@@ -70,11 +76,12 @@ export class HudScene extends Phaser.Scene {
     const goMode = (mode: 'thread' | 'wander') => {
       const leavingWorld = window.location.hash.startsWith('#/world');
       store.dispatch({ type: 'mode.changed', mode });
-      // The map stub announces on arrival and would overwrite the mode line;
+      // The map announces on arrival and would overwrite the mode line;
       // announce after navigation so the mode + stars survive in the reader.
       if (leavingWorld) navigate('#/');
-      // Wait a frame so the map scene's arrival announce lands first.
-      this.time.delayedCall(50, () => announceMode(mode));
+      // Wait for the map scene to arrive before announcing: it re-renders
+      // on the mode change (same hash), then routeFromHash restarts it.
+      this.time.delayedCall(250, () => announceMode(mode));
     };
 
     const thread = makeButton(this, {

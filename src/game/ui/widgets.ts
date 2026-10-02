@@ -22,42 +22,75 @@ function color(hex: string): number {
   return Phaser.Display.Color.HexStringToColor(hex).color;
 }
 
+/** Scene keys whose buttons join the single global Tab order. */
+const TABBED_SCENES = new Set(['hud', 'title', 'map', 'world', 'journal']);
+
 /**
  * Per-scene focus registry, created on demand and stored on the scene.
  * Tab order lives on the canvas: the browser keeps DOM focus on `body` while
  * the scene tracks which widget is current and draws its ring.
  *
- * Only the HUD wires Tab/Enter/Space: every scene's keyboard plugin hears
- * every key, so per-scene handlers would each advance their own registry and
- * all but the last would lose. The HUD bar is on every route, so one global
- * Tab order over its buttons is the correct scope for Wave 0.
+ * One scene owns Tab/Enter/Space at a time: every scene's keyboard plugin
+ * hears every key, so per-scene handlers would each advance their own
+ * registry. The owner is the topmost tabbed scene (map > title > hud).
  */
+function tabOwner(game: Phaser.Game): string {
+  const active = (key: string): boolean => {
+    try {
+      return game.scene.isActive(key);
+    } catch {
+      return false;
+    }
+  };
+  // World content owns Tab when a world is open; the HUD bar is reached
+  // from inside a world via pointer, not Tab. Everywhere else the topmost
+  // tabbed scene (map > title > hud) owns it.
+  if (active('journal')) return 'journal';
+  if (active('world')) return 'world';
+  if (active('map')) return 'map';
+  if (active('title')) return 'title';
+  return 'hud';
+}
+
 export function useFocus(scene: Phaser.Scene): FocusRegistry {
   const existing = (scene as unknown as Record<string, unknown>)[FOCUS_KEY] as FocusRegistry | undefined;
   if (existing) return existing;
   const registry = createFocusRegistry();
   (scene as unknown as Record<string, unknown>)[FOCUS_KEY] = registry;
-  if (scene.scene.key === 'hud') {
-    const keyboard = scene.input.keyboard;
-    const onTab = (event: KeyboardEvent) => {
-      event.preventDefault();
-      const id = registry.move(event.shiftKey ? -1 : 1);
-      if (id) highlightFocused(scene, id);
-    };
-    const onEnter = (event: KeyboardEvent) => {
-      event.preventDefault();
-      activateFocused(scene);
-    };
-    keyboard?.on('keydown-TAB', onTab);
-    keyboard?.on('keydown-ENTER', onEnter);
-    keyboard?.on('keydown-SPACE', onEnter);
-    keyboard?.addCapture('TAB,ENTER,SPACE');
-    // Phaser queues a fresh keydown event per scene per keypress; a stale
-    // closure can outlive a scene restart, so always resolve fresh state.
-    void onTab;
-    void onEnter;
+  if (TABBED_SCENES.has(scene.scene.key)) {
+    wireTabKeys(scene);
+    scene.input.keyboard?.addCapture('TAB,ENTER,SPACE');
   }
   return registry;
+}
+
+const WIRED_KEY = '__satyrnTabWired';
+
+/**
+ * Attach Tab/Enter/Space to the scene's CURRENT registry. Each scene's
+ * keyboard plugin is its own emitter, so wiring is once per plugin: the
+ * handlers resolve the live registry on every keypress instead of closing
+ * over it, and re-renders never touch the wiring.
+ */
+export function wireTabKeys(scene: Phaser.Scene): void {
+  if ((scene as unknown as Record<string, unknown>)[WIRED_KEY] === scene.input.keyboard) return;
+  (scene as unknown as Record<string, unknown>)[WIRED_KEY] = scene.input.keyboard;
+  const keyboard = scene.input.keyboard;
+  if (!keyboard) return;
+  keyboard.on('keydown-TAB', (event: KeyboardEvent) => {
+    if (tabOwner(scene.game) !== scene.scene.key) return;
+    event.preventDefault();
+    const focus = (scene as unknown as Record<string, unknown>)[FOCUS_KEY] as FocusRegistry | undefined;
+    const id = focus?.move(event.shiftKey ? -1 : 1);
+    if (id) highlightFocused(scene, id);
+  });
+  const onEnter = (event: KeyboardEvent) => {
+    if (tabOwner(scene.game) !== scene.scene.key) return;
+    event.preventDefault();
+    activateFocused(scene);
+  };
+  keyboard.on('keydown-ENTER', onEnter);
+  keyboard.on('keydown-SPACE', onEnter);
 }
 
 const RING_KEY = '__satyrnWidgets';
@@ -83,9 +116,17 @@ function highlightFocused(scene: Phaser.Scene, id: string): void {
 /** Forget the focus wiring after the keyboard plugin is torn down (scene stop). */
 export function resetFocusWiring(scene: Phaser.Scene): void {
   delete (scene as unknown as Record<string, unknown>)[FOCUS_KEY];
+  // The plugin instance is fresh after a stop/start, so re-wire next create.
+  if ((scene as unknown as Record<string, unknown>)[WIRED_KEY] !== scene.input.keyboard) {
+    delete (scene as unknown as Record<string, unknown>)[WIRED_KEY];
+  }
 }
 
-/** Drop every tracked widget: call before a scene re-renders its buttons. */
+/**
+ * Drop every tracked widget. Call AFTER destroying the old buttons:
+ * destroy handlers only remove their own entries, so clearing first would
+ * let a stale destroy wipe the new screen's ids.
+ */
 export function clearSceneWidgets(scene: Phaser.Scene): void {
   const stored = (scene as unknown as Record<string, unknown>)[RING_KEY] as SceneWidgets | undefined;
   stored?.rings.clear();
@@ -154,12 +195,17 @@ export function makeButton(scene: Phaser.Scene, opts: ButtonOptions): Phaser.Gam
   });
   container.on('pointerout', () => bg.setStrokeStyle(2, color(THEME.palette.charcoal)));
   container.on('pointerup', tap);
-  container.on('focus', () => ring.setVisible(true));
-  container.on('blur', () => ring.setVisible(false));
+  // Destroy cleanup must not unregister a FRESH registry entry: render()
+  // resets the registry then destroys the old buttons, so the destroy
+  // handler would otherwise remove the new screen's ids. Only clean up
+  // when the stored focus object is the one we registered with.
   container.on('destroy', () => {
-    focus.unregister(opts.id);
-    widgets.rings.delete(opts.id);
-    widgets.taps.delete(opts.id);
+    const live = (scene as unknown as Record<string, unknown>)[FOCUS_KEY];
+    if (live === focus) focus.unregister(opts.id);
+    if (widgetsOf(scene) === widgets) {
+      widgets.rings.delete(opts.id);
+      widgets.taps.delete(opts.id);
+    }
   });
   return container;
 }

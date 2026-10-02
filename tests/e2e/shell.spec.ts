@@ -4,25 +4,79 @@ test('HUD toggles the mode from inside a world and shows the star count', async 
   await page.goto('/?e2e=1#/world/world.aviary-of-whispers');
   const canvas = page.locator('#game canvas');
   await expect(canvas).toBeVisible();
-  // HUD Tab order: Thread, Wander, Journal, Sound. One Tab reaches Wander.
-  // Wait for the HUD scene to finish wiring before pressing Tab: the canvas
-  // is visible a frame before the overlay's keyboard handlers attach.
-  await page.waitForFunction(() => {
-    const g = (window as unknown as { game?: { scene: { getScene(k: string): unknown } } }).game;
-    if (!g) return false;
-    const hud = g.scene.getScene('hud') as unknown as Record<string, unknown> | null;
-    if (!hud) return false;
-    const widgets = hud.__satyrnWidgets as { taps?: Map<string, unknown> } | undefined;
-    return (widgets?.taps?.size ?? 0) > 0;
-  });
-  await page.keyboard.press('Tab');
-  // Let the HUD's Tab handler run before Enter: without a beat between them
-  // the keydown queue can deliver Enter first and activate the wrong button.
-  await page.waitForTimeout(300);
-  await page.keyboard.press('Enter');
+  // The world scene owns Tab while a world is open; the HUD toggle is
+  // reached by pointer. Click Wander (second HUD button from the left).
+  await page.waitForTimeout(1000);
+  await canvas.click({ position: { x: 270, y: 32 } });
   await expect(page).toHaveURL(/#\/$/);
   await expect(page.locator('#satyrn-live')).toContainText(/Wander/);
   await expect(page.locator('#satyrn-live')).toContainText(/0 of 27 stars/);
+});
+
+test('prologue walks three screens then lands on the map', async ({ page }) => {
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  await expect(page.locator('#satyrn-live')).toContainText(/Wayfarer/);
+  // Next is the first Tab stop on screens 1-2: Enter walks forward twice.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#satyrn-live')).toContainText(/companions/);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#satyrn-live')).toContainText(/how to play/i);
+  // Screen 3 has only Step onto the Thread: Enter lands on the map.
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page).toHaveURL(/#\/$/);
+  await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
+});
+
+test('map switches between thread and wander modes', async ({ page }) => {
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  // Skip the prologue: Tab twice from Next, Enter on Skip.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
+  // Wander groups the beads by act; the live region names the act labels.
+  await page.evaluate(() => {
+    const store = (window as unknown as { game: { registry: { get(k: string): { dispatch(e: unknown): void } } } }).game.registry.get('store');
+    store.dispatch({ type: 'mode.changed', mode: 'wander' });
+  });
+  await page.waitForTimeout(500);
+  const wanderLive = await page.evaluate(() => (window as unknown as { __satyrn: { live(): string | null } }).__satyrn.live());
+  expect(wanderLive).toMatch(/All the Beads/);
+  // Thread returns to the stitched path.
+  await page.evaluate(() => {
+    const store = (window as unknown as { game: { registry: { get(k: string): { dispatch(e: unknown): void } } } }).game.registry.get('store');
+    store.dispatch({ type: 'mode.changed', mode: 'thread' });
+  });
+  await expect(page.locator('#satyrn-live')).toContainText(/The Thread/);
+});
+
+test('map continues the thread to the next bead (placeholder)', async ({ page }) => {
+  await page.goto('/?e2e=1#/');
+  await page.waitForTimeout(1000);
+  // Skip is the second stop: Tab twice from Next, Enter skips to the map.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(200);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page.locator('#satyrn-live')).toContainText(/Lantern Room/);
+  // Map owns Tab now: one Tab lands on Continue the Thread, Enter walks on.
+  await page.keyboard.press('Tab');
+  await page.waitForTimeout(300);
+  await page.keyboard.press('Enter');
+  await page.waitForTimeout(500);
+  await expect(page).toHaveURL(/#\/world\/world\.lantern-room/);
 });
 
 test('boots to the title and exposes the gated e2e hook', async ({ page }) => {

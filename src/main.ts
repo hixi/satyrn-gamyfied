@@ -4,6 +4,8 @@ import { Store } from './store/store';
 import { SoundBank } from './game/audio';
 import { announce } from './game/announce';
 import { BootScene } from './game/scenes/boot';
+import { TitleScene } from './game/scenes/title';
+import { MapScene } from './game/scenes/map';
 import { SCENE_KEYS } from './game/scene-keys';
 import { NotFoundScene, WorldPlaceholderScene } from './game/scenes/world-placeholder';
 import { HudScene } from './game/overlays/hud';
@@ -35,8 +37,8 @@ const config: Phaser.Types.Core.GameConfig = {
   fps: { target: 60 },
   scene: [
     BootScene,
-    stub(SCENE_KEYS.title, 'You are the Wayfarer, walking a thread between ten small handmade worlds.'),
-    stub(SCENE_KEYS.map, 'The Thread.'),
+    TitleScene,
+    MapScene,
     WorldPlaceholderScene,
     NotFoundScene,
     HudScene,

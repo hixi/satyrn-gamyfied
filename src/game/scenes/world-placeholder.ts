@@ -4,6 +4,7 @@ import { announce } from '../announce';
 import { content } from '../../generated/content';
 import type { Store } from '../../store/store';
 import { navigate } from '../router-bridge';
+import { makeButton, clearSceneWidgets, resetFocusWiring, useFocus } from '../ui/widgets';
 
 /**
  * Minimal tappable card used by the placeholder and not-found scenes until the
@@ -71,8 +72,33 @@ export class WorldPlaceholderScene extends Phaser.Scene {
     const title = world?.title ?? 'Unknown Bead';
     const store = this.registry.get('store') as Store | undefined;
     if (world) store?.dispatch({ type: 'world.entered', world: world.id });
+    // Shared widget discipline: destroy first, then reset + rebuild.
+    this.children.removeAll(true);
+    resetFocusWiring(this);
+    useFocus(this);
+    clearSceneWidgets(this);
+    const { width, height } = this.scale;
+    const cx = width / 2;
+    const cy = height / 2;
+    this.add
+      .text(cx, cy - 80, title, {
+        fontFamily: THEME.fonts.display,
+        fontSize: '28px',
+        color: THEME.palette.ink,
+        align: 'center',
+      })
+      .setOrigin(0.5);
+    this.add
+      .text(cx, cy - 10, 'This Bead opens in its wave.', {
+        fontFamily: THEME.fonts.body,
+        fontSize: '16px',
+        color: THEME.palette.ink,
+        align: 'center',
+      })
+      .setOrigin(0.5);
+    const back = makeButton(this, { id: 'world-back', text: 'Back to the map', onTap: () => navigate('#/') });
+    back.setPosition(cx, cy + 70);
     announce(`${title}. This Bead opens in its wave.`);
-    drawCard(this, title, 'This Bead opens in its wave.', 'Back to the map', () => navigate('#/'));
   }
 }
 
