@@ -1,4 +1,5 @@
 import type { Achievement } from '../../tools/content/schema';
+import { exportState, importState, loadState, saveState } from './persistence';
 import { applyEvent, createInitialState, type GameState, type StoragePort, type StoreEvent } from './state';
 
 export type Predicate = (state: GameState, event: StoreEvent) => boolean;
@@ -14,8 +15,6 @@ export interface StoreOptions {
   /** Override the achievement evaluator. Default returns no achievements. */
   evaluate?: EvaluateFn;
 }
-
-const STORAGE_KEY = 'satyrn-book-as-game:v1';
 
 function defaultStorage(): StoragePort | null {
   try {
@@ -39,7 +38,7 @@ export class Store {
     this.achievements = options.achievements ?? [];
     this.predicates = options.predicates ?? {};
     this.evaluateFn = options.evaluate ?? (() => []);
-    this.state = createInitialState();
+    this.state = this.storage ? loadState(this.storage) : createInitialState();
   }
 
   getState(): Readonly<GameState> {
@@ -69,15 +68,15 @@ export class Store {
   }
 
   export(): string {
-    return JSON.stringify(this.state, null, 2);
+    return exportState(this.state);
   }
 
   import(json: string): void {
-    this.state = JSON.parse(json) as GameState;
+    this.state = importState(json);
     this.persist();
   }
 
   private persist(): void {
-    if (this.storage) this.storage.setItem(STORAGE_KEY, JSON.stringify(this.state));
+    if (this.storage) saveState(this.storage, this.state);
   }
 }
