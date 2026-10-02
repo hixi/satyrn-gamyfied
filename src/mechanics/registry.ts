@@ -12,6 +12,7 @@ import { MechanicGate } from './gate/gate';
 import { MechanicAssayer } from './assayer/assayer';
 import { MechanicBlueprint } from './blueprint/blueprint';
 import { MechanicWell } from './well/well';
+import { MechanicGarden } from './garden/garden';
 
 const registry = new Map<string, Registration>();
 
@@ -45,4 +46,5 @@ export function registerMechanics(): void {
   defineMechanic('mechanic.assayers-scale', MechanicAssayer, 'mechanic-assayers-scale');
   defineMechanic('mechanic.blueprint', MechanicBlueprint, 'mechanic-blueprint');
   defineMechanic('mechanic.well-and-pipe', MechanicWell, 'mechanic-well');
+  defineMechanic('mechanic.commons-garden', MechanicGarden, 'mechanic-garden');
 }

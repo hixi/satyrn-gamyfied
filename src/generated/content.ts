@@ -37,6 +37,15 @@ export const content: Content = {
         "concept.local-model"
       ]
     },
+    "concept.community": {
+      "id": "concept.community",
+      "term": "Community",
+      "short": "People who build together in the open.",
+      "body": "A community is what turns a tool into a commons. Its members write down what they learn, lend each other a hand, and keep the door open for whoever comes next. Nothing here grows on its own; it grows because someone added to it.",
+      "related": [
+        "concept.contribution"
+      ]
+    },
     "concept.constraint": {
       "id": "concept.constraint",
       "term": "Constraint",
@@ -52,6 +61,13 @@ export const content: Content = {
       "related": [
         "concept.tokens"
       ]
+    },
+    "concept.contribution": {
+      "id": "concept.contribution",
+      "term": "Contribution",
+      "short": "The act of adding something back.",
+      "body": "A contribution is anything you give back: a Bead, a note, a correction, a report from your own machine. It does not have to be grand. A single honest account of what worked and what did not is worth more than a polished claim.",
+      "related": []
     },
     "concept.evaluation": {
       "id": "concept.evaluation",
@@ -173,6 +189,12 @@ export const content: Content = {
       "title": "keeper of the blueprint",
       "description": "She draws what is to be built. A drawing with no measurements in it, she says, is not a plan — it is a wish, and you cannot build a wish."
     },
+    "character.gardener": {
+      "id": "character.gardener",
+      "name": "the Gardener",
+      "title": "keeper of the commons",
+      "description": "She keeps the commons: a garden where every Bead anyone plants is welcome. It grows by exactly the number of people who add to it, and no other way."
+    },
     "character.gatekeeper": {
       "id": "character.gatekeeper",
       "name": "the Gatekeeper",
@@ -272,6 +294,20 @@ export const content: Content = {
       "mechanic": "mechanic.cartwright",
       "summary": "A cart, a horse, a market, and the rig that gets one to the other.",
       "intro": "The Cartwright sets three empty slots before you. \"The horse is willing,\" she says. \"It is the rig that decides whether it arrives.\" "
+    },
+    "world.commons-garden": {
+      "id": "world.commons-garden",
+      "title": "The Commons Garden",
+      "act": "act3",
+      "order": 9,
+      "keeper": "character.gardener",
+      "concepts": [
+        "concept.community",
+        "concept.contribution"
+      ],
+      "mechanic": "mechanic.commons-garden",
+      "summary": "A garden of Beads planted by others, and a plot waiting for yours.",
+      "intro": "The Gardener waves you into the garden. Beads stand in neat rows, each one planted by someone who came before. \"Every one of these is a thing somebody chose to share,\" she says. \"There is a plot for yours.\""
     },
     "world.gate-of-orders": {
       "id": "world.gate-of-orders",
@@ -562,6 +598,53 @@ export const content: Content = {
         ]
       }
     },
+    "mechanic.commons-garden": {
+      "id": "mechanic.commons-garden",
+      "element": "mechanic-garden",
+      "title": "The Commons Garden",
+      "description": "Wander a few Beads other people planted, then plant one of your own. The garden grows by every Bead that is added to it.",
+      "a11y": "Visit a community Bead, type a name for your own, choose a seed, and plant it. You can also continue without playing.",
+      "params": {
+        "seeds": [
+          {
+            "id": "seed-attention",
+            "name": "Attention"
+          },
+          {
+            "id": "seed-evidence",
+            "name": "Evidence"
+          },
+          {
+            "id": "seed-constraint",
+            "name": "Constraint"
+          },
+          {
+            "id": "seed-tending",
+            "name": "Tending"
+          }
+        ],
+        "communityBeads": [
+          {
+            "id": "fog-alphabet",
+            "name": "The Fog Alphabet",
+            "keeper": "a lighthouse keeper",
+            "about": "A Bead about lighting one thing at a time so the whole coast is not lost in fog."
+          },
+          {
+            "id": "long-ledger",
+            "name": "The Long Ledger",
+            "keeper": "a bookkeeper",
+            "about": "A Bead about counting what a small model spends, one turn at a time."
+          },
+          {
+            "id": "second-lantern",
+            "name": "The Second Lantern",
+            "keeper": "a night watch",
+            "about": "A Bead about keeping a spare check ready for the moment the first one fails."
+          }
+        ]
+      }
+    },
     "mechanic.gate-of-orders": {
       "id": "mechanic.gate-of-orders",
       "element": "mechanic-gate",
@@ -836,6 +919,16 @@ export const content: Content = {
         "mechanic": "mechanic.blueprint"
       }
     },
+    "achievement.planted": {
+      "id": "achievement.planted",
+      "title": "Planted",
+      "description": "Wandered the commons and added a Bead of your own.",
+      "kind": "journey",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.commons-garden"
+      }
+    },
     "achievement.rigged-right": {
       "id": "achievement.rigged-right",
       "title": "Rigged Right",
@@ -994,6 +1087,30 @@ export const content: Content = {
         }
       }
     },
+    "dialogue.gardener.intro": {
+      "id": "dialogue.gardener.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.gardener",
+          "text": "You have mended a lot of machines. Would you leave the garden with nothing in it of yours?",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "What if what I know is small?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.gardener",
+          "text": "Small is how every row began. Plant what you learned; the next traveller will thank you for it.",
+          "choices": []
+        }
+      }
+    },
     "dialogue.gatekeeper.intro": {
       "id": "dialogue.gatekeeper.intro",
       "start": "start",
@@ -1144,7 +1261,8 @@ export const content: Content = {
         "world.gate-of-orders",
         "world.assayers-scale",
         "world.blueprint-and-mason",
-        "world.well-and-pipe"
+        "world.well-and-pipe",
+        "world.commons-garden"
       ]
     }
   },
