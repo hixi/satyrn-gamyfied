@@ -1,0 +1,41 @@
+/* Satyrn brand-inspired tokens. Palette reused from satyrn-zen's brand colours;
+   fonts and art are original — no licensed assets are copied. */
+:root {
+  --satyrn-yellow: #e3d678;
+  --satyrn-greige: #efe4d2;
+  --satyrn-charcoal: #383330;
+  --satyrn-yellow-dark: #433715;
+  --satyrn-ink: #2a2622;
+  --satyrn-paper: #fbf7ef;
+  --satyrn-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --satyrn-font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--satyrn-font-body);
+  color: var(--satyrn-ink);
+  background: var(--satyrn-paper);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--satyrn-font-display);
+  font-weight: 400;
+}
+
+a {
+  color: var(--satyrn-yellow-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
