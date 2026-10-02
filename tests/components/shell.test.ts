@@ -46,4 +46,12 @@ describe('shell', () => {
     const worlds = Object.values(getContent().worlds);
     for (const world of worlds) expect(text(map)).toContain(world.title);
   });
+
+  it('the app default store awards content achievements', async () => {
+    const app: any = document.createElement('satyrn-app');
+    document.body.append(app);
+    await app.updateComplete;
+    app.store.dispatch({ type: 'mechanic.completed', mechanic: 'mechanic.lantern', world: 'world.lantern-room' });
+    expect(app.store.getState().achievements).toContain('achievement.first-light');
+  });
 });

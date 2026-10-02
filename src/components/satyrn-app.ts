@@ -76,7 +76,9 @@ export class SatyrnApp extends LitElement {
     this.unsubscribeRouter = this.router.subscribe((route) => {
       this.route = route;
     });
-    if (!this.store) this.store = new Store();
+    if (!this.store) {
+      this.store = new Store({ achievements: Object.values(getContent().achievements) });
+    }
     this.unsubscribeState = this.store.subscribe(() => this.requestUpdate());
     this.route = this.router.current();
   }
@@ -114,6 +116,7 @@ export class SatyrnApp extends LitElement {
     return html`
       <header>
         <h1>${ui.appTitle ?? 'Satyrn'}</h1>
+        <a class="journal-link" href="#/journal">Journal</a>
         <span class="mode">
           <button type="button" aria-pressed=${mode === 'thread' ? 'true' : 'false'} @click=${() => this.setMode('thread')}>
             ${ui.threadMode ?? 'Thread'}
@@ -123,10 +126,6 @@ export class SatyrnApp extends LitElement {
           </button>
         </span>
       </header>
-      <details class="journal">
-        <summary>Journal</summary>
-        <satyrn-moon .store=${this.store}></satyrn-moon>
-      </details>
       ${this.renderDiagnostics()}
       <main>${this.renderRouteContent()}</main>
     `;
