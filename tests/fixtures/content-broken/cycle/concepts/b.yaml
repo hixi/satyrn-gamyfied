@@ -1,0 +1,5 @@
+id: concept.b
+term: B
+short: b
+body: b
+related: [concept.a]
