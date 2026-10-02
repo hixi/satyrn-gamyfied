@@ -3,6 +3,7 @@ title: The Aviary of Whispers
 act: act1
 order: 2
 keeper: character.birdwright
+dialogue: dialogue.birdwright.intro
 concepts: [concept.models, concept.taxonomy]
 mechanic: mechanic.aviary
 summary: Three errands, three birds, and a rule that each bird carries one.

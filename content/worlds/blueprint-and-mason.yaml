@@ -3,6 +3,7 @@ title: The Blueprint and the Mason
 act: act3
 order: 7
 keeper: character.draughtswoman
+dialogue: dialogue.draughtswoman.intro
 concepts: [concept.spec, concept.verification]
 mechanic: mechanic.blueprint
 summary: A drawing, a mason, and the difference between a wish and a spec.

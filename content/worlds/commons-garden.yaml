@@ -3,6 +3,7 @@ title: The Commons Garden
 act: act3
 order: 9
 keeper: character.gardener
+dialogue: dialogue.gardener.intro
 concepts: [concept.community, concept.contribution]
 mechanic: mechanic.commons-garden
 summary: A garden of Beads planted by others, and a plot waiting for yours.

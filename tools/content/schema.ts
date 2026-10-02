@@ -66,6 +66,7 @@ export const WorldSchema = z.object({
   act: z.enum(['prologue', 'act1', 'act2', 'act3']),
   order: z.number().int(),
   keeper: id('character').optional(),
+  dialogue: z.string().regex(/^dialogue\.[a-z0-9.-]+$/, 'must be dialogue.<slug>').optional(),
   concepts: z.array(id('concept')).default([]),
   mechanic: id('mechanic'),
   summary: z.string().min(1),

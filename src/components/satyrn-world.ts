@@ -4,6 +4,7 @@ import { threadSequence, neighbourInSequence } from '../thread';
 import './satyrn-companion';
 import { createInitialState } from '../store/state';
 import type { MechanicContext, MechanicElement } from '../mechanics/context';
+import './satyrn-dialogue';
 import type { Mechanic, World } from '../../tools/content/schema';
 import type { Store } from '../store/store';
 
@@ -46,10 +47,11 @@ export class SatyrnWorld extends LitElement {
     }
   `;
 
-  static properties = { worldId: {}, store: { attribute: false }, mode: {} };
+  static properties = { worldId: {}, store: { attribute: false }, mode: {}, openDialogue: { attribute: false } };
   declare worldId: string;
   declare store?: Store;
   declare mode: 'thread' | 'wander';
+  declare openDialogue?: string;
 
   private lastEnteredWorld?: string;
   private mountedMechanic?: MechanicElement;
@@ -61,8 +63,10 @@ export class SatyrnWorld extends LitElement {
   }
 
   protected willUpdate(changed: Map<PropertyKey, unknown>): void {
-    // A new world re-mounts its mechanic; the old one must not linger.
-    if (changed.has('worldId')) this.mountedMechanic = undefined;
+    if (changed.has('worldId')) {
+      this.mountedMechanic = undefined;
+      this.openDialogue = undefined;
+    }
   }
 
   private placeholder(world: World) {
@@ -104,8 +108,22 @@ export class SatyrnWorld extends LitElement {
             subscribe: () => () => {},
             dispatch: () => {},
           },
-      dialogue: { open: () => {} },
+      dialogue: { open: (id) => this.openDialogueById(id) },
     };
+  }
+
+  private openDialogueById(id: string): void {
+    this.openDialogue = id;
+    this.requestUpdate();
+  }
+
+  private renderDialogue(content: ReturnType<typeof getContent>) {
+    const id = this.openDialogue ?? (this.worldId ? content.worlds[this.worldId]?.dialogue : undefined);
+    if (!id || !content.dialogues[id]) return null;
+    return html`<satyrn-dialogue
+      .dialogueId=${id}
+      .state=${this.store?.getState() ?? createInitialState()}
+    ></satyrn-dialogue>`;
   }
 
   protected updated(): void {
@@ -140,6 +158,7 @@ export class SatyrnWorld extends LitElement {
       <h2>${world.title}</h2>
       ${keeper ? html`<p><strong>${keeper.name}</strong> — ${keeper.description}</p>` : null}
       <p>${world.intro}</p>
+      ${this.renderDialogue(content)}
       <satyrn-companion .line=${mechanic?.description ?? world.summary}></satyrn-companion>
       <nav>
         ${world.concepts.map(

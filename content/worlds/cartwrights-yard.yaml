@@ -3,6 +3,7 @@ title: The Cartwright's Yard
 act: act1
 order: 3
 keeper: character.cartwright
+dialogue: dialogue.cartwright.intro
 concepts: [concept.agent, concept.harness]
 mechanic: mechanic.cartwright
 summary: A cart, a horse, a market, and the rig that gets one to the other.

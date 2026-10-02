@@ -3,6 +3,7 @@ title: The Gate of Orders
 act: act2
 order: 5
 keeper: character.gatekeeper
+dialogue: dialogue.gatekeeper.intro
 concepts: [concept.instruction, concept.constraint]
 mechanic: mechanic.gate-of-orders
 summary: One gate, four travellers, and a set of orders that must survive every case.

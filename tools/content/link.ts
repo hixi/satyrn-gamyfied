@@ -31,6 +31,7 @@ export function linkContent(content: Content): Pick<ContentDiagnostics, 'danglin
 
   for (const world of Object.values(content.worlds)) {
     if (world.keeper) ref(world.id, 'keeper', world.keeper, characterIds.has(world.keeper));
+    if (world.dialogue) ref(world.id, 'dialogue', world.dialogue, world.dialogue in content.dialogues);
     for (const concept of world.concepts) ref(world.id, 'concepts', concept, conceptIds.has(concept));
     ref(world.id, 'mechanic', world.mechanic, mechanicIds.has(world.mechanic));
     if (world.engineRoom?.mechanic) {

@@ -245,6 +245,7 @@ export const content: Content = {
       "act": "act2",
       "order": 6,
       "keeper": "character.assayer",
+      "dialogue": "dialogue.assayer.intro",
       "concepts": [
         "concept.evaluation",
         "concept.evidence"
@@ -259,6 +260,7 @@ export const content: Content = {
       "act": "act1",
       "order": 2,
       "keeper": "character.birdwright",
+      "dialogue": "dialogue.birdwright.intro",
       "concepts": [
         "concept.models",
         "concept.taxonomy"
@@ -273,6 +275,7 @@ export const content: Content = {
       "act": "act3",
       "order": 7,
       "keeper": "character.draughtswoman",
+      "dialogue": "dialogue.draughtswoman.intro",
       "concepts": [
         "concept.spec",
         "concept.verification"
@@ -287,6 +290,7 @@ export const content: Content = {
       "act": "act1",
       "order": 3,
       "keeper": "character.cartwright",
+      "dialogue": "dialogue.cartwright.intro",
       "concepts": [
         "concept.agent",
         "concept.harness"
@@ -301,6 +305,7 @@ export const content: Content = {
       "act": "act3",
       "order": 9,
       "keeper": "character.gardener",
+      "dialogue": "dialogue.gardener.intro",
       "concepts": [
         "concept.community",
         "concept.contribution"
@@ -315,6 +320,7 @@ export const content: Content = {
       "act": "act2",
       "order": 5,
       "keeper": "character.gatekeeper",
+      "dialogue": "dialogue.gatekeeper.intro",
       "concepts": [
         "concept.instruction",
         "concept.constraint"
@@ -329,6 +335,7 @@ export const content: Content = {
       "act": "prologue",
       "order": 0,
       "keeper": "character.satyrn",
+      "dialogue": "dialogue.satyrn.intro",
       "concepts": [
         "concept.ai-system",
         "concept.attention"
@@ -343,6 +350,7 @@ export const content: Content = {
       "act": "act1",
       "order": 1,
       "keeper": "character.waterwarden",
+      "dialogue": "dialogue.waterwarden.intro",
       "concepts": [
         "concept.tokens",
         "concept.context-window"
@@ -357,6 +365,7 @@ export const content: Content = {
       "act": "act2",
       "order": 4,
       "keeper": "character.miller",
+      "dialogue": "dialogue.miller.intro",
       "concepts": [
         "concept.runaway-loop",
         "concept.loop-breaker"
@@ -371,6 +380,7 @@ export const content: Content = {
       "act": "act3",
       "order": 8,
       "keeper": "character.well-digger",
+      "dialogue": "dialogue.well-digger.intro",
       "concepts": [
         "concept.local-model",
         "concept.cloud"

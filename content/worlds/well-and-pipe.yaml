@@ -3,6 +3,7 @@ title: The Well and the Pipe
 act: act3
 order: 8
 keeper: character.well-digger
+dialogue: dialogue.well-digger.intro
 concepts: [concept.local-model, concept.cloud]
 mechanic: mechanic.well-and-pipe
 summary: A well you own, a pipe to a distant lake, and a day's needs to route.
