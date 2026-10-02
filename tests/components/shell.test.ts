@@ -31,12 +31,12 @@ describe('shell', () => {
     expect(text(app)).toMatch(/not found/i);
   });
 
-  it('shows a placeholder when a world mechanic is not registered', async () => {
+  it('mounts the registered mechanic for a world', async () => {
     const w: any = document.createElement('satyrn-world');
     w.worldId = 'world.lantern-room';
     document.body.append(w);
     await w.updateComplete;
-    expect(text(w)).toMatch(/not installed|continue/i);
+    expect(w.shadowRoot.querySelector('[data-mechanic]')).toBeTruthy();
   });
 
   it('lists every content world on the map', async () => {

@@ -3,6 +3,8 @@ interface Registration {
   element: string;
 }
 
+import { MechanicLantern } from './lantern/lantern';
+
 const registry = new Map<string, Registration>();
 
 /** Register a mechanic's element for an id. Idempotent: an existing tag is kept. */
@@ -26,5 +28,5 @@ export function registeredMechanicElement(id: string): string | undefined {
  * `defineMechanic` line here; nothing else in the app needs to change.
  */
 export function registerMechanics(): void {
-  // Task 14 adds: defineMechanic('mechanic.lantern', MechanicLantern, 'mechanic-lantern');
+  defineMechanic('mechanic.lantern', MechanicLantern, 'mechanic-lantern');
 }
