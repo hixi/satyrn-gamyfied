@@ -90,8 +90,12 @@ describe('shell', () => {
     expect(app.store.getState().mode).toBe('thread');
     expect(app.renderRoot.querySelector('satyrn-map')?.mode).toBe('thread');
 
+    // Choosing Wander on the thread route must stick, and leave the thread URL.
     app.store.dispatch({ type: 'mode.changed', mode: 'wander' });
     await app.updateComplete;
+    await new Promise((r) => setTimeout(r, 0));
+    await app.updateComplete;
+    expect(app.store.getState().mode).toBe('wander');
     expect(app.renderRoot.querySelector('satyrn-map')?.mode).toBe('wander');
   });
 });

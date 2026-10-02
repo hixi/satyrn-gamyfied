@@ -16,3 +16,12 @@ test('Wander mode shows the Beads by act without a next CTA', async ({ page }) =
   // Nothing is locked: a late Bead is reachable directly from the map.
   await expect(page.locator('satyrn-map a[href="#/world/world.commons-garden"]')).toBeVisible();
 });
+
+test('choosing Wander on the thread route sticks and leaves the thread URL', async ({ page }) => {
+  await page.goto('/#/thread');
+  await expect(page.locator('satyrn-map')).toContainText(/Continue the Thread/);
+  await page.getByRole('button', { name: 'Wander' }).click();
+  await expect(page.locator('satyrn-map')).toContainText(/Act I/);
+  await expect(page.locator('satyrn-map')).not.toContainText(/Continue the Thread/);
+  await expect(page).toHaveURL(/#\/$/);
+});

@@ -74,13 +74,13 @@ export class SatyrnApp extends LitElement {
     if (!this.router) this.router = new Router();
     this.router.start();
     this.unsubscribeRouter = this.router.subscribe((route) => {
-      this.route = route;
+      this.syncModeToRoute(route);
     });
     if (!this.store) {
       this.store = new Store({ achievements: Object.values(getContent().achievements) });
     }
     this.unsubscribeState = this.store.subscribe(() => this.requestUpdate());
-    this.route = this.router.current();
+    this.syncModeToRoute(this.router.current());
   }
 
   disconnectedCallback(): void {
@@ -92,22 +92,27 @@ export class SatyrnApp extends LitElement {
 
   /** Single render switch; also the seam tests call directly. */
   renderRoute(route: Route): void {
-    this.route = route;
+    this.syncModeToRoute(route);
   }
 
   private setMode(mode: 'thread' | 'wander'): void {
     this.store?.dispatch({ type: 'mode.changed', mode });
+    // Choosing Wander while on the `#/thread` deep link leaves that URL, so the
+    // route and the toggle do not fight.
+    if (mode === 'wander' && this.route.name === 'thread') {
+      this.router?.navigate({ name: 'map' });
+    }
   }
 
   private currentMode(): 'thread' | 'wander' {
     return this.store?.getState().mode ?? 'thread';
   }
 
-  protected updated(): void {
-    // The `#/thread` deep link selects Thread mode, so the toggle agrees with
-    // the view. Dispatching does not navigate, so there is no loop.
-    if (this.route.name === 'thread' && this.currentMode() !== 'thread') {
-      this.setMode('thread');
+  /** The `#/thread` deep link selects Thread mode, once, when the route changes. */
+  private syncModeToRoute(route: Route): void {
+    this.route = route;
+    if (route.name === 'thread' && this.currentMode() !== 'thread') {
+      this.store?.dispatch({ type: 'mode.changed', mode: 'thread' });
     }
   }
 
