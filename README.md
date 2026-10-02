@@ -36,8 +36,10 @@ npm run preview    # serve the built site
 The repository ships a GitHub Actions workflow that deploys `dist/` to
 **GitHub Pages** on every push to `main`
 (`https://<owner>.github.io/<repo>/`). Routing is hash-based, so it needs no
-server rewrite rules. The deploy never passes `--allow-dangling`; a broken
-content reference fails the build rather than shipping.
+server rewrite rules. The workflow builds only — the test suite, type check,
+and e2e run locally (`npm run check`), not in CI. The build still runs the strict
+content check, so a broken reference or an unsolvable scenario fails the deploy
+rather than shipping.
 
 ## The world
 
@@ -97,8 +99,7 @@ mechanic, a concept, an achievement — and that the references between parts ar
   never points back), which forbids cycles and is what makes a part swappable.
 - **A link checker resolves the whole graph** at build time: dangling
   references, duplicate ids, cycles, and unreachable worlds. In development it
-  warns and the game shows a visible placeholder; in `build` and in CI it
-  **fails hard**.
+  warns and the game shows a visible placeholder; in `build` it **fails hard**.
 - **Every mechanic's scenario is validated at build time** against its own
   logic. A world whose puzzle is unsolvable — more essential drops than the cup
   holds, no check that can fail, an ambiguous order, sensitive needs past the

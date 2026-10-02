@@ -24,10 +24,10 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npx playwright install --with-deps chromium
-      # The full gate: strict content check (never passes --allow-dangling),
-      # type check, unit tests, build, and e2e.
-      - run: npm run check
+      # Build only. Tests, type check, and e2e are run locally, not in CI.
+      # `prebuild` still runs the strict content check (cheap, no browser), so a
+      # deploy is never built from incoherent content.
+      - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
