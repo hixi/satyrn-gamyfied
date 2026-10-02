@@ -15,26 +15,26 @@ export const SCENE_KEYS = {
   toasts: 'toasts',
 } as const;
 
-function flatTexture(scene: Phaser.Scene, key: string, draw: (g: Phaser.GameObjects.Graphics) => void): void {
+function flatTexture(scene: Phaser.Scene, key: string, w: number, h: number, draw: (g: Phaser.GameObjects.Graphics) => void): void {
   const g = scene.make.graphics({ x: 0, y: 0 }, false);
   draw(g);
-  g.generateTexture(key, g.width || 64, g.height || 64);
+  g.generateTexture(key, w, h);
   g.destroy();
 }
 
 /** Shared generated textures: one flat in-code art style, no assets. */
 function generateTextures(scene: Phaser.Scene): void {
-  flatTexture(scene, 'dot', (g) => {
+  flatTexture(scene, 'dot', 16, 16, (g) => {
     g.fillStyle(0xffffff, 1);
     g.fillCircle(8, 8, 8);
   });
-  flatTexture(scene, 'bead', (g) => {
+  flatTexture(scene, 'bead', 48, 48, (g) => {
     g.fillStyle(0xe3d678, 1);
     g.fillCircle(24, 24, 22);
     g.lineStyle(4, 0x433715, 1);
     g.strokeCircle(24, 24, 22);
   });
-  flatTexture(scene, 'bead-dim', (g) => {
+  flatTexture(scene, 'bead-dim', 48, 48, (g) => {
     g.fillStyle(0xefe4d2, 1);
     g.fillCircle(24, 24, 22);
     g.lineStyle(4, 0x383330, 1);
@@ -45,7 +45,7 @@ function generateTextures(scene: Phaser.Scene): void {
     ['moon', 0xefe4d2, 0xfbf7ef],
     ['keeper', 0x383330, 0xefe4d2],
   ] as const) {
-    flatTexture(scene, `portrait-${key}`, (g) => {
+    flatTexture(scene, `portrait-${key}`, 96, 96, (g) => {
       g.fillStyle(robe, 1);
       g.fillRoundedRect(0, 0, 96, 96, 16);
       g.fillStyle(face, 1);

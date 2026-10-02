@@ -4,7 +4,10 @@ import { Store } from './store/store';
 import { SoundBank } from './game/audio';
 import { announce } from './game/announce';
 import { BootScene, SCENE_KEYS } from './game/scenes/boot';
+import { NotFoundScene, WorldPlaceholderScene } from './game/scenes/world-placeholder';
 import { installE2eHook } from './game/e2e-hook';
+import { normalizeRoute, routeToSceneKey } from './game/router-bridge';
+import { parseHash } from './router';
 
 /** Scene stubs until Tasks 6–10 fill them in. Each announces its arrival. */
 function stub(key: string, line: string): new () => Phaser.Scene {
@@ -32,9 +35,22 @@ const config: Phaser.Types.Core.GameConfig = {
     BootScene,
     stub(SCENE_KEYS.title, 'You are the Wayfarer, walking a thread between ten small handmade worlds.'),
     stub(SCENE_KEYS.map, 'The Thread.'),
-    stub(SCENE_KEYS.world, 'A Bead on the Thread.'),
+    WorldPlaceholderScene,
+    NotFoundScene,
+    stub(SCENE_KEYS.journal, 'The Moon remembers.'),
   ],
 };
+
+function routeFromHash(): void {
+  const route = normalizeRoute(parseHash(window.location.hash), store.getState().mode);
+  const key = routeToSceneKey(route);
+  const data = route.name === 'world' ? { worldId: route.worldId } : {};
+  game.scene.stop(SCENE_KEYS.title);
+  game.scene.stop(SCENE_KEYS.map);
+  game.scene.stop(SCENE_KEYS.world);
+  game.scene.stop(SCENE_KEYS.notFound);
+  game.scene.start(key, data);
+}
 
 const game = new Phaser.Game(config);
 game.registry.set('store', store);
@@ -46,4 +62,5 @@ installE2eHook(game);
 
 if (typeof window !== 'undefined') {
   window.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+  window.addEventListener('hashchange', routeFromHash);
 }
