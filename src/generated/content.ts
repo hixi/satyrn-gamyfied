@@ -1290,8 +1290,14 @@ export const content: Content = {
         "wanderMode": "Wander",
         "continueWithoutPlaying": "Continue without playing",
         "mapHeading": "The Thread",
+        "wanderHeading": "All the Beads",
         "journalHeading": "The Moon's Memory",
-        "notInstalled": "This mechanic is not installed — you can continue."
+        "notInstalled": "This mechanic is not installed — you can continue.",
+        "threadNarration": "The Moon remembers the road. Follow the lantern-light from one Bead to the next.",
+        "threadContinue": "Continue the Thread",
+        "threadComplete": "You have walked the whole Thread.",
+        "backToThread": "Back to the Thread",
+        "backToMap": "Back to the map"
       }
     }
   }
