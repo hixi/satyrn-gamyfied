@@ -3,6 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "license": "Apache-2.0",
+  "author": "Nicola Jordan",
   "scripts": {
     "build:content": "tsx tools/build-content.ts",
     "check:content": "tsx tools/check-content.ts",

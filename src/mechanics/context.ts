@@ -61,7 +61,9 @@ export abstract class MechanicElement extends LitElement {
     this.context.store.dispatch({ type: 'evidence.submitted', mechanic: this.context.mechanic.id, evidence });
   }
 
-  /** The accessible, non-interactive description of what this mechanic asks. */
+  /**
+   * The accessible, non-interactive description of what this mechanic asks.
+   */
   abstract renderFallback(): TemplateResult;
 
   /** The description plus the universal "continue without playing" control. */
@@ -74,7 +76,14 @@ export abstract class MechanicElement extends LitElement {
     `;
   }
 
+  /**
+   * Continue without playing: an honest skip, recorded as such. It completes the
+   * mechanic so the player is never stuck, and it records `world.skipped` so the
+   * skip is acknowledged distinctly from having solved the puzzle.
+   */
   protected useFallback(): void {
+    if (!this.context) return;
+    this.context.store.dispatch({ type: 'world.skipped', world: this.context.world.id });
     this.emitComplete();
     this.emitEvidence({ usedFallback: true });
   }

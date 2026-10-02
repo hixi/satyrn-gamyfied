@@ -975,8 +975,7 @@ export const content: Content = {
       "description": "Chose to move on and come back later. That is allowed, and honest.",
       "kind": "skip",
       "condition": {
-        "event": "world.skipped",
-        "world": "world.lantern-room"
+        "event": "world.skipped"
       }
     },
     "achievement.your-own-well": {
