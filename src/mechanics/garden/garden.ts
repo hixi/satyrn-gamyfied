@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, MAX_NAME_LENGTH, type CommunityBead, type Seed } from './scenario';
 
-/** The Commons Garden: wander the commons, then plant a Bead of your own. */
 export class MechanicGarden extends MechanicElement {
   static accessibilityDescription =
     'Visit a community Bead, type a name for your own Bead, choose a seed, and plant it in the garden.';

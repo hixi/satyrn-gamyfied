@@ -7,7 +7,6 @@ import type { MechanicContext, MechanicElement } from '../mechanics/context';
 import type { Mechanic, World } from '../../tools/content/schema';
 import type { Store } from '../store/store';
 
-/** One Bead: its keeper, its ideas, and its mechanic (or an accessible placeholder). */
 export class SatyrnWorld extends LitElement {
   static styles = css`
     :host {

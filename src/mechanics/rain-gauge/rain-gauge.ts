@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, type Drop } from './scenario';
 
-/** The Rain-Gauge: a fixed-size cup, more drops than room. Keep only what is needed. */
 export class MechanicRainGauge extends MechanicElement {
   static accessibilityDescription =
     'A cup that holds a fixed number of raindrops. For each drop choose Keep or Let fall; the plants need particular ones.';
@@ -91,7 +90,6 @@ export class MechanicRainGauge extends MechanicElement {
     super.setContext(context);
   }
 
-  /** Decide one drop: keep it in the cup, or let it fall. */
   decide(id: string, keep: boolean): void {
     if (this.completed || this.decided.includes(id)) return;
     if (keep && this.kept.length >= this.capacity) return;

@@ -91,7 +91,6 @@ export function simulate(goal: number, chosen: Record<string, Component>): RunRe
   return 'ran-out';
 }
 
-/** Whether any work/limit/check assignment reaches the market and stops. */
 export function isSolvable(goal: number, components: Component[]): boolean {
   const works = components.filter((c) => c.type === 'work');
   const limits = components.filter((c) => c.type === 'limit');

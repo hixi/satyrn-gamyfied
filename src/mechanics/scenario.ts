@@ -5,7 +5,6 @@
  */
 export type ScenarioProblems = string[];
 
-/** A scenario validator: returns problems with the authored params; empty is valid. */
 export type ScenarioValidator = (params: unknown) => ScenarioProblems;
 
 export function isRecord(value: unknown): value is Record<string, unknown> {
@@ -28,7 +27,6 @@ export function isNonEmptyStringArray(value: unknown): value is string[] {
   return Array.isArray(value) && value.length > 0 && value.every((v) => typeof v === 'string');
 }
 
-/** Ids that appear more than once, in order of first repeat. */
 export function duplicates(ids: string[]): string[] {
   const seen = new Set<string>();
   const dupes: string[] = [];
@@ -39,7 +37,6 @@ export function duplicates(ids: string[]): string[] {
   return dupes;
 }
 
-/** Ids from a list of `{ id }` records. */
 export function idsOf(items: { id: string }[]): string[] {
   return items.map((item) => item.id);
 }

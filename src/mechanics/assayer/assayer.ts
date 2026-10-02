@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, type Check, type Item, type Reading, type RelyResult } from './scenario';
 
-/** The Assayer's Scale: rely on a check that can fail, and catch the unsound weight. */
 export class MechanicAssayer extends MechanicElement {
   static accessibilityDescription =
     'Choose a check to rely on, then mark the unsound weight. A check that cannot fail proves nothing.';
@@ -100,7 +99,6 @@ export class MechanicAssayer extends MechanicElement {
     super.setContext(context);
   }
 
-  /** What a check reads for every item. */
   readings(checkId: string): Record<string, Reading> {
     const check = this.checks.find((c) => c.id === checkId);
     const out: Record<string, Reading> = {};

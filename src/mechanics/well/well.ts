@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, type Source, type Task } from './scenario';
 
-/** The Well and the Pipe: route needs between a private well and a shared pipe. */
 export class MechanicWell extends MechanicElement {
   static accessibilityDescription =
     'For each need choose Well or Pipe. Sensitive needs must stay in the well, and the well has a fixed capacity.';
@@ -103,7 +102,6 @@ export class MechanicWell extends MechanicElement {
     return this.tasks.filter((t) => this.assignments[t.id] === 'pipe').reduce((sum, t) => sum + t.need, 0);
   }
 
-  /** Apply the rules and report every problem by name. */
   check(): { ok: boolean; problems: string[] } {
     const problems: string[] = [];
     for (const task of this.tasks) {

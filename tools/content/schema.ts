@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-/** An id in a namespace, e.g. `concept.tokens`, `world.rain-gauge`. */
 const id = (ns: string) =>
   z.string().regex(new RegExp('^' + ns + '\\.[a-z0-9-]+$'), `must be ${ns}.<slug>`);
 

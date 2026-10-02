@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, uniqueMatchingTask, type Bird, type Task } from './scenario';
 
-/** The Aviary: match each errand to a suitable bird, each bird lent only once. */
 export class MechanicAviary extends MechanicElement {
   static accessibilityDescription =
     'Three errands and three birds. Assign each errand a bird that has every needed gift, using each bird at most once.';
@@ -119,7 +118,6 @@ export class MechanicAviary extends MechanicElement {
     }
   }
 
-  /** Assign each task a bird that fits, using the solver. Used by tests and the hint. */
   solve(): void {
     const solved = uniqueMatchingTask(this.birds, this.tasks);
     const next = { ...this.assignments };

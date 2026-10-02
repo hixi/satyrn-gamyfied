@@ -9,7 +9,6 @@ import './satyrn-concept';
 import './satyrn-not-found';
 import './satyrn-moon';
 
-/** The shell: header, Thread/Wander toggle, route switch, and dev diagnostics. */
 export class SatyrnApp extends LitElement {
   static styles = css`
     :host {
@@ -90,7 +89,6 @@ export class SatyrnApp extends LitElement {
     this.router?.stop();
   }
 
-  /** Single render switch; also the seam tests call directly. */
   renderRoute(route: Route): void {
     this.syncModeToRoute(route);
   }

@@ -1,11 +1,9 @@
 import type { Content } from '../tools/content/schema';
 
-/** The authored order of Beads, from `thread.main`. */
 export function threadSequence(content: Content): string[] {
   return content.threads['thread.main']?.sequence ?? [];
 }
 
-/** The first Bead in the sequence the player has not yet entered. */
 export function nextUnvisited(sequence: string[], visited: string[]): string | undefined {
   const seen = new Set(visited);
   return sequence.find((id) => !seen.has(id));

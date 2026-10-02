@@ -17,7 +17,6 @@ export interface DialogueApi {
   open(dialogueId: string): void;
 }
 
-/** Everything a mechanic may read, plus the two ways it may act (dispatch, dialogue). */
 export interface MechanicContext {
   mechanic: Mechanic;
   world: World;
@@ -32,7 +31,6 @@ export interface MechanicContext {
  * description plus a "continue without playing" control).
  */
 export abstract class MechanicElement extends LitElement {
-  /** Screen-reader description of the mechanic's puzzle. */
   static accessibilityDescription = '';
 
   protected context?: MechanicContext;
@@ -51,7 +49,6 @@ export abstract class MechanicElement extends LitElement {
     this.unsubscribe = undefined;
   }
 
-  /** Whether the player asked for reduced motion. Read from persisted settings. */
   protected get reducedMotion(): boolean {
     return this.context?.store.getState().settings.reducedMotion ?? false;
   }
@@ -75,12 +72,8 @@ export abstract class MechanicElement extends LitElement {
     this.context.store.dispatch({ type: 'evidence.submitted', mechanic: this.context.mechanic.id, evidence });
   }
 
-  /**
-   * The accessible, non-interactive description of what this mechanic asks.
-   */
   abstract renderFallback(): TemplateResult;
 
-  /** The description plus the universal "continue without playing" control. */
   protected renderAccessibleShell(): TemplateResult {
     return html`
       <div class="fallback">

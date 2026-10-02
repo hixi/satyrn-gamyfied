@@ -15,7 +15,6 @@ const SPOTS: Spot[] = [
   { id: 'door', label: 'the door', x: 76, y: 76 },
 ];
 
-/** The Prologue: direct a lantern through a dark room and light what you attend to. */
 export class MechanicLantern extends MechanicElement {
   static accessibilityDescription =
     'A dark workshop with four places to light: the workbench, the shelf, the hearth, and the door.';
@@ -108,7 +107,6 @@ export class MechanicLantern extends MechanicElement {
     this.toggleAttribute('data-reduced-motion', this.reducedMotion);
   }
 
-  /** Place the lantern on a required spot. Exposed for the keyboard path and tests. */
   moveToSpot(index: number): void {
     const spot = SPOTS[index];
     if (!spot) return;

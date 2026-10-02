@@ -22,12 +22,10 @@ export function defineMechanic(id: string, ctor: CustomElementConstructor, eleme
   if (!customElements.get(element)) customElements.define(element, ctor);
 }
 
-/** The ids of every registered mechanic. */
 export function registeredMechanics(): string[] {
   return [...registry.keys()];
 }
 
-/** The custom-element tag a mechanic id renders as. */
 export function registeredMechanicElement(id: string): string | undefined {
   return registry.get(id)?.element;
 }

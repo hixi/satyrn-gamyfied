@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, type Clause, type ClauseKind } from './scenario';
 
-/** The Blueprint and the Mason: a spec the Mason can build and check. */
 export class MechanicBlueprint extends MechanicElement {
   static accessibilityDescription =
     'Choose clauses to form a spec, then ask the Mason to build. Only measurable clauses can be built and checked.';
@@ -98,7 +97,6 @@ export class MechanicBlueprint extends MechanicElement {
     return found;
   }
 
-  /** Ask the Mason to build from the current spec. */
   build(): 'vague' | 'correct' | 'wrong-size' {
     const width = this.lastChosen('width');
     const height = this.lastChosen('height');

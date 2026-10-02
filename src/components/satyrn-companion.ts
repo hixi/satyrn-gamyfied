@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { getContent } from '../content';
 
-/** The Satyrn's current line: quick, eager, and easily distracted. */
 export class SatyrnCompanion extends LitElement {
   static styles = css`
     :host {

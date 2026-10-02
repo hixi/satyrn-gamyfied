@@ -25,7 +25,6 @@ function defaultStorage(): StoragePort | null {
   }
 }
 
-/** Holds game state, evaluates achievements on each event, and notifies subscribers. */
 export class Store {
   private state: GameState;
   private readonly listeners = new Set<(state: GameState, event: StoreEvent | null) => void>();

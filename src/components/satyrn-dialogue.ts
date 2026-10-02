@@ -7,7 +7,6 @@ import type { DialogueChoice } from '../../tools/content/schema';
 /** An event that matches no leaf; choice conditions are read from state alone. */
 const NO_MATCHING_EVENT: StoreEvent = { type: 'world.entered', world: '\u0000none' };
 
-/** Data-driven dialogue: a node, its speaker, its text, and its visible choices. */
 export class SatyrnDialogue extends LitElement {
   static styles = css`
     :host {

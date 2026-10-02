@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, simulate, type Component, type Slot, type RunResult } from './scenario';
 
-/** The Cartwright's Yard: build a harness that reaches the market and stops there. */
 export class MechanicCartwright extends MechanicElement {
   static accessibilityDescription =
     'Three slots: a work tool, a limit on how far the cart may go, and a check that knows when it arrived. Fit them so the cart reaches the market and stops.';

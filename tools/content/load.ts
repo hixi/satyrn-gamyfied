@@ -16,7 +16,6 @@ const BUCKETS = [
 
 export class ContentLoadError extends Error {}
 
-/** Read every `*.yaml` part under each bucket of `rootDir`, keyed by id. */
 export function loadRawContent(rootDir: string): RawContent {
   const out = {} as RawContent;
   for (const bucket of BUCKETS) {

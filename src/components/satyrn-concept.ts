@@ -1,7 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { getContent } from '../content';
 
-/** A glossary page for one concept, with its one-directional related links. */
 export class SatyrnConcept extends LitElement {
   static styles = css`
     :host {

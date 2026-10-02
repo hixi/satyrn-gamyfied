@@ -11,7 +11,6 @@ const KIND_LABELS: Record<string, string> = {
   journey: 'Journey',
 };
 
-/** The Moon: your journal, your reflection, and your counterweight. */
 export class SatyrnMoon extends LitElement {
   static styles = css`
     :host {

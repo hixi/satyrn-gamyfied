@@ -68,7 +68,6 @@ export function admits(order: Order, traveller: Traveller): boolean {
   );
 }
 
-/** Orders that handle every traveller exactly as they should. */
 export function passingOrders(travellers: Traveller[], orders: Order[]): Order[] {
   return orders.filter((order) => travellers.every((t) => admits(order, t) === t.shouldEnter));
 }

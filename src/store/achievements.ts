@@ -47,7 +47,6 @@ export function matchesCondition(state: GameState, event: StoreEvent, condition:
   }
 }
 
-/** Ids of achievements the event newly earns, in catalog order. */
 export function evaluateAchievements(
   state: GameState,
   event: StoreEvent,

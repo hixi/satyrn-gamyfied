@@ -26,7 +26,6 @@ export function parseHash(hash: string): Route {
   }
 }
 
-/** The hash a route navigates to; the inverse of `parseHash`. */
 export function routeToHash(route: Route): string {
   switch (route.name) {
     case 'map':
@@ -44,7 +43,6 @@ export function routeToHash(route: Route): string {
   }
 }
 
-/** Watches `location.hash` and notifies subscribers of the current route. */
 export class Router {
   private readonly listeners = new Set<(route: Route) => void>();
   private onHashChange = () => this.emit();

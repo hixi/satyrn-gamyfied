@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { parseScenario, type Step } from './scenario';
 
-/** The Round Path: spot the repeating block and break the loop without losing the work. */
 export class MechanicRoundPath extends MechanicElement {
   static accessibilityDescription =
     'A numbered list of the mule’s steps. Select the steps that make up one full turn of the repeating circle, then break the loop.';

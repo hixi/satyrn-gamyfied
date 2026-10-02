@@ -2,7 +2,6 @@ import { html, css, type TemplateResult } from 'lit';
 import { MechanicElement } from '../context';
 import { admits, parseScenario, type Order, type Traveller } from './scenario';
 
-/** The Gate of Orders: find the literal order that survives every edge case. */
 export class MechanicGate extends MechanicElement {
   static accessibilityDescription =
     'Choose one standing order. The gate applies it literally to every traveller and reports which cases fail.';
@@ -108,7 +107,6 @@ export class MechanicGate extends MechanicElement {
     return { passed: failures.length === 0, failures };
   }
 
-  /** Every order's failures, for a live comparison. */
   readings(): { orderId: string; failures: string[] }[] {
     return this.orders.map((order) => ({ orderId: order.id, failures: this.failuresFor(order) }));
   }

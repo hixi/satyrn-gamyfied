@@ -1,6 +1,5 @@
 import { LitElement, html, css } from 'lit';
 
-/** A friendly dead end for an unknown route or id. */
 export class SatyrnNotFound extends LitElement {
   static styles = css`
     :host {

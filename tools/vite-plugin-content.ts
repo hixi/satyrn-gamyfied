@@ -3,13 +3,11 @@ import { buildContent } from './content/build';
 
 const OPTS = { rootDir: 'content', outFile: 'src/generated/content.ts', strict: false };
 
-/** Whether a changed path is inside the content directory (any platform). */
 function isContentPath(path: string): boolean {
   const normalized = path.split(/[\\/]/);
   return normalized.includes('content');
 }
 
-/** Build the content bundle at startup and rebuild it when `content/` changes. */
 export function contentPlugin(): Plugin {
   return {
     name: 'satyrn-content',

@@ -4,7 +4,6 @@ import { threadSequence, nextUnvisited } from '../thread';
 
 type Mode = 'thread' | 'wander';
 
-/** The map of Beads: a guided Thread, or every Bead grouped by act (Wander). */
 export class SatyrnMap extends LitElement {
   static styles = css`
     :host {
