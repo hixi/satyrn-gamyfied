@@ -5,6 +5,7 @@ interface Registration {
 
 import { MechanicLantern } from './lantern/lantern';
 import { MechanicRainGauge } from './rain-gauge/rain-gauge';
+import { MechanicAviary } from './aviary/aviary';
 
 const registry = new Map<string, Registration>();
 
@@ -31,4 +32,5 @@ export function registeredMechanicElement(id: string): string | undefined {
 export function registerMechanics(): void {
   defineMechanic('mechanic.lantern', MechanicLantern, 'mechanic-lantern');
   defineMechanic('mechanic.rain-gauge', MechanicRainGauge, 'mechanic-rain-gauge');
+  defineMechanic('mechanic.aviary', MechanicAviary, 'mechanic-aviary');
 }

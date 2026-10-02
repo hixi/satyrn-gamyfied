@@ -28,6 +28,22 @@ export const content: Content = {
         "concept.tokens"
       ]
     },
+    "concept.models": {
+      "id": "concept.models",
+      "term": "Model",
+      "short": "What actually does the reading and writing.",
+      "body": "A model is the thing that takes your tokens and produces an answer. Models differ in size, speed, and care. A small one is quick and cheap; a large one is slower and holds more. None of them is simply \"better\".",
+      "related": [
+        "concept.taxonomy"
+      ]
+    },
+    "concept.taxonomy": {
+      "id": "concept.taxonomy",
+      "term": "Taxonomy",
+      "short": "Naming the kinds, so you can choose between them.",
+      "body": "A taxonomy is a way of sorting things into named kinds. Once you can say \"this is a swift little model\" or \"this is a vast careful one\", you can match the kind to the errand instead of hoping one size fits all.",
+      "related": []
+    },
     "concept.tokens": {
       "id": "concept.tokens",
       "term": "Token",
@@ -37,6 +53,12 @@ export const content: Content = {
     }
   },
   "characters": {
+    "character.birdwright": {
+      "id": "character.birdwright",
+      "name": "the Birdwright",
+      "title": "keeper of the aviary",
+      "description": "She keeps birds of every temperament, because no single bird suits every errand. Choosing well is her whole craft."
+    },
     "character.moon": {
       "id": "character.moon",
       "name": "the Moon",
@@ -57,6 +79,20 @@ export const content: Content = {
     }
   },
   "worlds": {
+    "world.aviary-of-whispers": {
+      "id": "world.aviary-of-whispers",
+      "title": "The Aviary of Whispers",
+      "act": "act1",
+      "order": 2,
+      "keeper": "character.birdwright",
+      "concepts": [
+        "concept.models",
+        "concept.taxonomy"
+      ],
+      "mechanic": "mechanic.aviary",
+      "summary": "Three errands, three birds, and a rule that each bird carries one.",
+      "intro": "The Birdwright opens the aviary. \"Every bird is good at something,\" she says, \"and none is good at everything. Match them.\""
+    },
     "world.lantern-room": {
       "id": "world.lantern-room",
       "title": "The Lantern Room",
@@ -87,6 +123,67 @@ export const content: Content = {
     }
   },
   "mechanics": {
+    "mechanic.aviary": {
+      "id": "mechanic.aviary",
+      "element": "mechanic-aviary",
+      "title": "The Aviary of Whispers",
+      "description": "Three errands, three birds, and each bird can take only one errand. Match the temperament to the task.",
+      "a11y": "For each task choose a bird from the list. A bird may carry only one task. You can also continue without playing.",
+      "params": {
+        "birds": [
+          {
+            "id": "swift",
+            "name": "the swift wren",
+            "traits": [
+              "swift",
+              "small"
+            ]
+          },
+          {
+            "id": "patient",
+            "name": "the patient heron",
+            "traits": [
+              "patient",
+              "careful"
+            ]
+          },
+          {
+            "id": "vast",
+            "name": "the vast crane",
+            "traits": [
+              "vast",
+              "careful"
+            ]
+          }
+        ],
+        "tasks": [
+          {
+            "id": "many",
+            "label": "carry many small messages quickly",
+            "needs": [
+              "swift",
+              "small"
+            ]
+          },
+          {
+            "id": "gentle",
+            "label": "tend a fragile nest for hours",
+            "needs": [
+              "patient",
+              "careful"
+            ]
+          },
+          {
+            "id": "wide",
+            "label": "survey the whole valley at once",
+            "needs": [
+              "vast",
+              "careful"
+            ]
+          }
+        ]
+      }
+    },
     "mechanic.lantern": {
       "id": "mechanic.lantern",
       "element": "mechanic-lantern",
@@ -161,6 +258,16 @@ export const content: Content = {
         "mechanic": "mechanic.lantern"
       }
     },
+    "achievement.right-bird": {
+      "id": "achievement.right-bird",
+      "title": "Right Bird for the Errand",
+      "description": "Matched every task to a bird that suited it — no bird twice.",
+      "kind": "lesson",
+      "condition": {
+        "event": "mechanic.completed",
+        "mechanic": "mechanic.aviary"
+      }
+    },
     "achievement.steady-hand": {
       "id": "achievement.steady-hand",
       "title": "Steady Hand",
@@ -183,6 +290,30 @@ export const content: Content = {
     }
   },
   "dialogues": {
+    "dialogue.birdwright.intro": {
+      "id": "dialogue.birdwright.intro",
+      "start": "start",
+      "nodes": {
+        "start": {
+          "id": "start",
+          "speaker": "character.birdwright",
+          "text": "People ask me for the best bird. I ask them for the errand. There is no best bird, only a right one.",
+          "choices": [
+            {
+              "id": "ask",
+              "text": "What if one errand needs two gifts?",
+              "next": "answer"
+            }
+          ]
+        },
+        "answer": {
+          "id": "answer",
+          "speaker": "character.birdwright",
+          "text": "Then you need a bird that has both. That is why I keep such different kinds, and why I can lend each of them only once.",
+          "choices": []
+        }
+      }
+    },
     "dialogue.satyrn.intro": {
       "id": "dialogue.satyrn.intro",
       "start": "start",
@@ -254,7 +385,8 @@ export const content: Content = {
       "title": "The Thread",
       "sequence": [
         "world.lantern-room",
-        "world.rain-gauge-terrace"
+        "world.rain-gauge-terrace",
+        "world.aviary-of-whispers"
       ]
     }
   },
