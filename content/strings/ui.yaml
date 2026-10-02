@@ -1,0 +1,10 @@
+id: strings.ui
+title: UI
+values:
+  appTitle: Satyrn — The Thread
+  threadMode: Thread
+  wanderMode: Wander
+  continueWithoutPlaying: Continue without playing
+  mapHeading: The Thread
+  journalHeading: The Moon's Memory
+  notInstalled: This mechanic is not installed — you can continue.

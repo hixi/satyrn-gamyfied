@@ -1,3 +1,10 @@
+import { buildContent } from '../tools/content/build';
+
 export default async function () {
-  // Filled in Task 5: build the content bundle before the suite runs.
+  // Build the content bundle before the suite runs, so tests can `getContent()`.
+  await buildContent({
+    rootDir: 'content',
+    outFile: 'src/generated/content.ts',
+    strict: false,
+  });
 }

@@ -1,0 +1,11 @@
+id: mechanic.lantern
+element: mechanic-lantern
+title: The Lantern
+description: >-
+  Move the lantern through the dark workshop and light what you attend to. Only
+  the lit part exists to the Satyrn.
+a11y: >-
+  Move the lantern with the arrow keys and press Enter to light a spot. You can
+  also continue without playing.
+params:
+  spots: 4
