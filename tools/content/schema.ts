@@ -47,7 +47,6 @@ export const CharacterSchema = z.object({
 
 export const MechanicSchema = z.object({
   id: id('mechanic'),
-  element: z.string().min(1),
   title: z.string().min(1),
   description: z.string().min(1),
   a11y: z.string().min(1),

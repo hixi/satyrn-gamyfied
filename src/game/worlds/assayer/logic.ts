@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export type Reading = 'sound' | 'unsound';
 export type CheckKind = 'vanity' | 'honest' | 'broken';
@@ -69,5 +69,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   if (!checks.some((check) => check.kind === 'honest')) {
     problems.push('unsolvable: no honest check, so no reading can be trusted');
   }
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

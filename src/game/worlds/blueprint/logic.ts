@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, isPositiveNumber, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, isPositiveNumber, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export type ClauseKind = 'width' | 'height' | 'vague';
 
@@ -55,5 +55,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   const hasHeight = clauses.some((c) => c.kind === 'height' && c.value === blueprint.height);
   if (!hasWidth) problems.push(`unsolvable: no width clause of ${blueprint.width}`);
   if (!hasHeight) problems.push(`unsolvable: no height clause of ${blueprint.height}`);
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

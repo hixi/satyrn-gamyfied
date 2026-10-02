@@ -1,5 +1,4 @@
 id: mechanic.blueprint
-element: mechanic-blueprint
 title: The Blueprint and the Mason
 description: >-
   Choose the clauses that make a spec the Mason can build and check. A vague
@@ -16,3 +15,4 @@ params:
     - { id: h30, text: "30 bricks high", kind: height, value: 30 }
     - { id: sturdy, text: "sturdy enough", kind: vague }
     - { id: about-right, text: "looks about right", kind: vague }
+  stars: { three: 0, two: 2 }

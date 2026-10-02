@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, isPositiveInt, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, isPositiveInt, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export interface Step {
   id: string;
@@ -63,5 +63,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   if (effectiveStart + effectiveLength > steps.length) {
     problems.push(`cycleStart ${effectiveStart} + cycleLength ${effectiveLength} runs past ${steps.length} steps`);
   }
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

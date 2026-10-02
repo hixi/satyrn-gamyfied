@@ -1,5 +1,4 @@
 id: mechanic.rain-gauge
-element: mechanic-rain-gauge
 title: The Rain-Gauge
 description: >-
   The terrace's cup holds only five drops, and the plants need five particular
@@ -18,3 +17,4 @@ params:
     - { id: echo, label: "echo", essential: false }
     - { id: bloom, label: "bloom", essential: true }
     - { id: harvest, label: "harvest", essential: true }
+  stars: { three: 0, two: 2 }

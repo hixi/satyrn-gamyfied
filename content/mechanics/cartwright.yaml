@@ -1,5 +1,4 @@
 id: mechanic.cartwright
-element: mechanic-cartwright
 title: The Cartwright's Yard
 description: >-
   Rig the cart so the horse reaches the market — and stops there. Fit a work
@@ -20,3 +19,4 @@ params:
     - { id: nudge, name: "a gentle nudge", type: distraction }
     - { id: marker, name: "a market marker", type: verify }
     - { id: bell, name: "a pretty bell", type: distraction }
+  stars: { three: 0, two: 2 }

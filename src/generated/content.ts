@@ -393,7 +393,6 @@ export const content: Content = {
   "mechanics": {
     "mechanic.assayers-scale": {
       "id": "mechanic.assayers-scale",
-      "element": "mechanic-assayers-scale",
       "title": "The Assayer's Scale",
       "description": "The gleaming scale reads \"excellent\" for every weight. Find a check that can actually fail, rely on it, and mark the weight that is truly unsound.",
       "a11y": "Choose a check to rely on, then mark the unsound weight. Only a check that can fail proves anything. You can also continue without playing.",
@@ -436,12 +435,15 @@ export const content: Content = {
             "label": "the stubborn scale",
             "kind": "broken"
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.aviary": {
       "id": "mechanic.aviary",
-      "element": "mechanic-aviary",
       "title": "The Aviary of Whispers",
       "description": "Three errands, three birds, and each bird can take only one errand. Match the temperament to the task.",
       "a11y": "For each task choose a bird from the list. A bird may carry only one task. You can also continue without playing.",
@@ -497,12 +499,15 @@ export const content: Content = {
               "careful"
             ]
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.blueprint": {
       "id": "mechanic.blueprint",
-      "element": "mechanic-blueprint",
       "title": "The Blueprint and the Mason",
       "description": "Choose the clauses that make a spec the Mason can build and check. A vague clause leaves her waiting; the measurements must match the drawing.",
       "a11y": "Choose clauses to form a spec, then ask the Mason to build. Only measurable clauses can be built and checked. You can also continue without playing.",
@@ -546,12 +551,15 @@ export const content: Content = {
             "text": "looks about right",
             "kind": "vague"
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.cartwright": {
       "id": "mechanic.cartwright",
-      "element": "mechanic-cartwright",
       "title": "The Cartwright's Yard",
       "description": "Rig the cart so the horse reaches the market — and stops there. Fit a work tool, a limit, and a check; a missing piece sends it bolting or stuck.",
       "a11y": "For each slot choose a component, then send the cart. The cart must reach the market and stop. You can also continue without playing.",
@@ -605,12 +613,15 @@ export const content: Content = {
             "name": "a pretty bell",
             "type": "distraction"
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.commons-garden": {
       "id": "mechanic.commons-garden",
-      "element": "mechanic-garden",
       "title": "The Commons Garden",
       "description": "Wander a few Beads other people planted, then plant one of your own. The garden grows by every Bead that is added to it.",
       "a11y": "Visit a community Bead, type a name for your own, choose a seed, and plant it. You can also continue without playing.",
@@ -657,7 +668,6 @@ export const content: Content = {
     },
     "mechanic.gate-of-orders": {
       "id": "mechanic.gate-of-orders",
-      "element": "mechanic-gate",
       "title": "The Gate of Orders",
       "description": "Choose the one standing order that admits exactly those who should enter. The gate reads it literally, so an order that misses an edge case will let the wrong traveller through.",
       "a11y": "Choose one standing order from the list. The gate applies it to every traveller and reports which cases fail. You can also continue without playing.",
@@ -729,20 +739,27 @@ export const content: Content = {
               "lantern"
             ]
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.lantern": {
       "id": "mechanic.lantern",
-      "element": "mechanic-lantern",
       "title": "The Lantern",
       "description": "Move the lantern through the dark workshop and light what you attend to. Only the lit part exists to the Satyrn.",
       "a11y": "Move the lantern with the arrow keys and press Enter to light a spot. You can also continue without playing.",
-      "params": {}
+      "params": {
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
+      }
     },
     "mechanic.rain-gauge": {
       "id": "mechanic.rain-gauge",
-      "element": "mechanic-rain-gauge",
       "title": "The Rain-Gauge",
       "description": "The terrace's cup holds only five drops, and the plants need five particular ones. Choose what to keep; what you keep beyond the cup spills.",
       "a11y": "For each drop, choose Keep or Let fall. The cup holds a fixed number of drops. You can also continue without playing.",
@@ -789,12 +806,15 @@ export const content: Content = {
             "label": "harvest",
             "essential": true
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.round-path": {
       "id": "mechanic.round-path",
-      "element": "mechanic-round-path",
       "title": "The Round Path",
       "description": "The mule's night is a list of steps. Some are this morning's work; then the same small circle, over and over. Mark the first full turn of the circle and break it — without losing the work.",
       "a11y": "Select the steps that make up one turn of the repeating circle, then choose Break the loop. You can also continue without playing.",
@@ -846,12 +866,15 @@ export const content: Content = {
             "id": "find-nothing-4",
             "label": "find nothing new"
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     },
     "mechanic.well-and-pipe": {
       "id": "mechanic.well-and-pipe",
-      "element": "mechanic-well",
       "title": "The Well and the Pipe",
       "description": "Route each of the day's needs to your own well or to the pipe from the lake. Sensitive work must stay in the well, and the well holds only so much.",
       "a11y": "For each need, choose Well or Pipe. Sensitive needs must go to the well; the well has a fixed capacity. You can also continue without playing.",
@@ -882,7 +905,11 @@ export const content: Content = {
             "need": 5,
             "sensitive": false
           }
-        ]
+        ],
+        "stars": {
+          "three": 0,
+          "two": 2
+        }
       }
     }
   },

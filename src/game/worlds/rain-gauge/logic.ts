@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export interface Drop {
   id: string;
@@ -54,5 +54,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   if (essentials > capacity) {
     problems.push(`unsolvable: ${essentials} essential drops do not fit a cup of ${capacity}`);
   }
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getContent } from '../../src/content';
-import { SCENARIO_VALIDATORS } from '../../src/mechanics/scenarios';
+import { SCENARIO_VALIDATORS } from '../../src/game/worlds/scenarios';
 import { validateScenarios } from '../../tools/content/scenarios';
 import type { Content } from '../../tools/content/schema';
 
@@ -20,9 +20,13 @@ describe('scenario validators', () => {
     }
   });
 
-  it('accepts the defaults when params are absent', () => {
+  it('accepts the defaults when params carry only stars', () => {
     for (const [id, validator] of Object.entries(SCENARIO_VALIDATORS)) {
-      expect(validator({}), id).toEqual([]);
+      if (id === 'mechanic.commons-garden') {
+        expect(validator({}), id).toEqual([]);
+      } else {
+        expect(validator({ stars: { three: 0, two: 2 } }), id).toEqual([]);
+      }
     }
   });
 
@@ -34,7 +38,6 @@ describe('scenario validators', () => {
         ...content.mechanics,
         'mechanic.fake': {
           id: 'mechanic.fake',
-          element: 'mechanic-fake',
           title: 'Fake',
           description: 'd',
           a11y: 'a',

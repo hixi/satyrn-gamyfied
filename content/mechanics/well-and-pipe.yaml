@@ -1,5 +1,4 @@
 id: mechanic.well-and-pipe
-element: mechanic-well
 title: The Well and the Pipe
 description: >-
   Route each of the day's needs to your own well or to the pipe from the lake.
@@ -14,3 +13,4 @@ params:
     - { id: bathing, label: "bathing water", need: 2, sensitive: true }
     - { id: laundry, label: "laundry", need: 3, sensitive: false }
     - { id: garden, label: "watering the garden", need: 5, sensitive: false }
+  stars: { three: 0, two: 2 }

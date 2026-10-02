@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export interface Seed {
   id: string;
@@ -73,5 +73,9 @@ export function validateScenario(params: unknown): ScenarioProblems {
   const beadCount = Array.isArray(raw.communityBeads) ? raw.communityBeads.length : communityBeads.length;
   if (seedCount === 0) problems.push('unsolvable: no seeds to plant');
   if (beadCount === 0) problems.push('unsolvable: no community Beads to wander');
+  if (isRecord(params) && params.stars !== undefined) {
+    problems.push('the garden epilogue must not carry stars');
+  }
+  problems.push(...validateStarsParam(params, { required: false }));
   return problems;
 }

@@ -1,11 +1,6 @@
-import { SCENARIO_VALIDATORS } from '../../src/mechanics/scenarios';
+import { SCENARIO_VALIDATORS } from '../../src/game/worlds/scenarios';
 import type { Content, ScenarioProblem } from './schema';
 
-/**
- * Validate every authored mechanic's `params` against its scenario validator.
- * A mechanic that carries params but registers no validator is itself a problem,
- * so a new world cannot quietly ship an unchecked scenario.
- */
 export function validateScenarios(content: Content): ScenarioProblem[] {
   const problems: ScenarioProblem[] = [];
   for (const [id, mechanic] of Object.entries(content.mechanics)) {

@@ -1,5 +1,4 @@
 id: mechanic.lantern
-element: mechanic-lantern
 title: The Lantern
 description: >-
   Move the lantern through the dark workshop and light what you attend to. Only
@@ -7,3 +6,5 @@ description: >-
 a11y: >-
   Move the lantern with the arrow keys and press Enter to light a spot. You can
   also continue without playing.
+params:
+  stars: { three: 0, two: 2 }

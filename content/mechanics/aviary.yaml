@@ -1,5 +1,4 @@
 id: mechanic.aviary
-element: mechanic-aviary
 title: The Aviary of Whispers
 description: >-
   Three errands, three birds, and each bird can take only one errand. Match
@@ -16,3 +15,4 @@ params:
     - { id: many, label: "carry many small messages quickly", needs: [swift, small] }
     - { id: gentle, label: "tend a fragile nest for hours", needs: [patient, careful] }
     - { id: wide, label: "survey the whole valley at once", needs: [vast, careful] }
+  stars: { three: 0, two: 2 }

@@ -7,6 +7,37 @@ export type ScenarioProblems = string[];
 
 export type ScenarioValidator = (params: unknown) => ScenarioProblems;
 
+export interface StarBands {
+  three: number;
+  two: number;
+}
+
+/** Read and type-check the shared `stars` thresholds from mechanic params. */
+export function parseStars(params: unknown): StarBands | undefined {
+  if (!isRecord(params)) return undefined;
+  const stars = params.stars;
+  if (!isRecord(stars)) return undefined;
+  const { three, two } = stars as Record<string, unknown>;
+  if (!Number.isInteger(three) || !Number.isInteger(two)) return undefined;
+  return { three: three as number, two: two as number };
+}
+
+/** Shape and order problems for the shared `stars` thresholds. */
+export function validateStarsParam(params: unknown, opts?: { required?: boolean }): ScenarioProblems {
+  const problems: ScenarioProblems = [];
+  const required = opts?.required ?? true;
+  const stars = isRecord(params) ? params.stars : undefined;
+  if (stars === undefined) {
+    if (required) problems.push('missing stars thresholds');
+    return problems;
+  }
+  const parsed = parseStars(params);
+  if (!parsed || parsed.three < 0 || parsed.two < 0 || parsed.three > parsed.two) {
+    problems.push('stars must be { three, two } non-negative integers with three <= two');
+  }
+  return problems;
+}
+
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === 'object' && !Array.isArray(value);
 }

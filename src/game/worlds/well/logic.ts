@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, isPositiveNumber, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, isPositiveNumber, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export type Source = 'well' | 'pipe';
 
@@ -53,5 +53,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   if (sensitiveNeed > wellCapacity) {
     problems.push(`unsolvable: sensitive needs (${sensitiveNeed}) exceed the well (${wellCapacity})`);
   }
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export interface Bird {
   id: string;
@@ -81,5 +81,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   if (matching.size !== tasks.length) {
     problems.push('unsolvable: no way to lend each errand a suited bird, each bird once');
   }
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export interface Traveller {
   id: string;
@@ -90,5 +90,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   else if (passing.length > 1) {
     problems.push(`ambiguous: ${passing.length} orders pass (${passing.map((o) => o.id).join(', ')}); the puzzle wants exactly one`);
   }
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

@@ -12,7 +12,7 @@ describe('content loader', () => {
   });
   it('validates into a typed Content', () => {
     const content = validateContent(loadRawContent(ROOT));
-    expect(content.mechanics['mechanic.lantern'].element).toBe('mechanic-lantern');
+    expect(content.mechanics['mechanic.lantern'].title).toBe('The Lantern');
   });
   it('throws ContentLoadError on a duplicate id', () => {
     expect(() => loadRawContent('tests/fixtures/content-broken/duplicate')).toThrow(/duplicate/i);

@@ -1,4 +1,4 @@
-import { duplicates, idsOf, isRecord, isPositiveNumber, type ScenarioProblems } from '../scenario';
+import { duplicates, idsOf, isRecord, isPositiveNumber, type ScenarioProblems, validateStarsParam } from '../scenario-helpers';
 
 export type ComponentType = 'work' | 'limit' | 'verify' | 'distraction';
 
@@ -122,5 +122,6 @@ export function validateScenario(params: unknown): ScenarioProblems {
   if (!components.some((c) => c.type === 'verify')) problems.push('unsolvable: no verify component, so the cart cannot stop');
   if (!components.some((c) => c.type === 'limit')) problems.push('unsolvable: no limit component, so the loop never ends');
   else if (!isSolvable(goal, components)) problems.push(`unsolvable: no rig reaches a market at ${goal}`);
+  problems.push(...validateStarsParam(params, { required: true }));
   return problems;
 }

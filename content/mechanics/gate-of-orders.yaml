@@ -1,5 +1,4 @@
 id: mechanic.gate-of-orders
-element: mechanic-gate
 title: The Gate of Orders
 description: >-
   Choose the one standing order that admits exactly those who should enter.
@@ -19,3 +18,4 @@ params:
     - { id: merchants-only, text: "Admit merchants; turn away pilgrims.", allow: [merchant], deny: [] }
     - { id: everyone, text: "Admit everyone, and turn away no one.", allow: [], deny: [] }
     - { id: carrying-nothing, text: "Admit only those who carry nothing.", allow: [], deny: [lantern] }
+  stars: { three: 0, two: 2 }

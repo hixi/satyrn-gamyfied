@@ -1,5 +1,4 @@
 id: mechanic.assayers-scale
-element: mechanic-assayers-scale
 title: The Assayer's Scale
 description: >-
   The gleaming scale reads "excellent" for every weight. Find a check that can
@@ -17,3 +16,4 @@ params:
     - { id: gleaming, label: "the gleaming scale", kind: vanity }
     - { id: assay, label: "the assay, weighed against a known good", kind: honest }
     - { id: stubborn, label: "the stubborn scale", kind: broken }
+  stars: { three: 0, two: 2 }
