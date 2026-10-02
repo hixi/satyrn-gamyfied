@@ -1,4 +1,5 @@
 import type { Achievement } from '../../tools/content/schema';
+import { evaluateAchievements } from './achievements';
 import { exportState, importState, loadState, saveState } from './persistence';
 import { applyEvent, createInitialState, type GameState, type StoragePort, type StoreEvent } from './state';
 
@@ -37,7 +38,9 @@ export class Store {
     this.storage = options.storage === undefined ? defaultStorage() : options.storage;
     this.achievements = options.achievements ?? [];
     this.predicates = options.predicates ?? {};
-    this.evaluateFn = options.evaluate ?? (() => []);
+    this.evaluateFn =
+      options.evaluate ??
+      ((state, event) => evaluateAchievements(state, event, this.achievements, this.predicates));
     this.state = this.storage ? loadState(this.storage) : createInitialState();
   }
 
